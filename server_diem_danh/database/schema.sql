@@ -12,7 +12,6 @@ CREATE TABLE students (
 CREATE TABLE attendance (
     attendance_id INT AUTO_INCREMENT PRIMARY KEY,
     student_id VARCHAR(20),
-    rfid_uid VARCHAR(50),
     checkin_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     room VARCHAR(10),
     FOREIGN KEY (student_id) REFERENCES students(student_id)

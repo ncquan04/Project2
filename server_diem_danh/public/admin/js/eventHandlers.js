@@ -1,5 +1,5 @@
 // public/admin/js/eventHandlers.js
-import { loadStudents, addStudent, editStudent, deleteStudent } from './studentManagement.js';
+import { loadStudents, addStudent, editStudent, deleteStudent, importStudentsFromExcel } from './studentManagement.js';
 import { displayAttendance } from './attendanceManagement.js';
 import { validateFilters, createFilterObject, resetFilters } from '/server_diem_danh/public/assets/js/filterUtils.js';
 import { logout } from '/server_diem_danh/public/assets/js/utils.js';
@@ -46,6 +46,22 @@ export function setupEventListeners() {
         if (success) {
             loadStudents();
             bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
+        }
+    });
+
+    // Thêm sinh viên bằng file excel
+    document.getElementById('importStudentsForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('excelFile');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('Vui lòng chọn file Excel');
+            return;
+        }
+        const success = await importStudentsFromExcel(file);
+        if (success) {
+            loadStudents();
+            bootstrap.Modal.getInstance(document.getElementById('importStudentsModal')).hide();
         }
     });
 

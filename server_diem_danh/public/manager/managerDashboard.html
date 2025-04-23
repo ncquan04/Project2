@@ -1,4 +1,4 @@
-<!-- public/manager/dashboard.html -->
+<!-- public/manager/managerDashboard.html -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -28,61 +28,114 @@
     <div class="container mt-4">
         <h2>Quản lý điểm danh lớp học</h2>
 
-        <!-- Form nhập liệu -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Nhập danh sách lớp</h5>
-                <form id="classForm">
-                    <div class="mb-3">
-                        <label for="classFile" class="form-label">File Excel danh sách lớp</label>
-                        <input type="file" class="form-control" id="classFile" accept=".xlsx, .xls" required>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="filterDate" class="form-label">Ngày học</label>
-                            <input type="date" class="form-control" id="filterDate" required>
-                        </div>
-                        <div class="col-md-3" id="timeFilter" style="display: none;">
-                            <label class="form-label">Khoảng thời gian</label>
-                            <div class="row">
-                                <div class="col">
-                                    <input type="time" class="form-control" id="filterStartTime" required>
-                                </div>
-                                <div class="col">
-                                    <input type="time" class="form-control" id="filterEndTime" required>
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="managerTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="true">Ghi điểm danh thủ công</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="export-tab" data-bs-toggle="tab" data-bs-target="#export" type="button" role="tab" aria-controls="export" aria-selected="false">Xuất thông tin điểm danh</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="managerTabsContent">
+            <!-- Tab 1: Ghi điểm danh thủ công -->
+            <div class="tab-pane fade show active" id="manual" role="tabpanel" aria-labelledby="manual-tab">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Ghi điểm danh thủ công</h5>
+                        <form id="manualAttendanceForm">
+                            <div id="attendanceEntries">
+                                <!-- Dòng mặc định -->
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="Mã sinh viên (vd: sv001)" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="Phòng học (vd: P501)" required>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="filterRoom" class="form-label">Phòng học</label>
-                            <select class="form-select" id="filterRoom" required>
-                                <option value="">Chọn phòng</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary">Kiểm tra điểm danh</button>
-                        </div>
+                            <button type="button" class="btn btn-secondary mt-2" id="addEntryBtn">Thêm dòng</button>
+                            <button type="submit" class="btn btn-primary mt-2">Gửi</button>
+                        </form>
                     </div>
-                </form>
+                </div>
+                <!-- Bảng xác nhận -->
+                <div id="confirmationTable" class="mt-3" style="display: none;">
+                    <h5>Xác nhận thông tin điểm danh</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Mã sinh viên</th>
+                                <th>Phòng học</th>
+                            </tr>
+                        </thead>
+                        <tbody id="confirmationList"></tbody>
+                    </table>
+                    <button type="button" class="btn btn-success" id="confirmBtn">Xác nhận</button>
+                    <button type="button" class="btn btn-danger" id="cancelBtn">Hủy</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Kết quả điểm danh -->
-        <div id="attendanceResult" style="display: none;">
-            <h5>Kết quả điểm danh</h5>
-            <button id="exportBtn" class="btn btn-success mb-3">Xuất file Excel</button>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Số thứ tự</th>
-                        <th>Mã SV</th>
-                        <th>Họ tên</th>
-                        <th>Lớp</th>
-                        <th>Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody id="attendanceList"></tbody>
-            </table>
+            <!-- Tab 2: Xuất thông tin điểm danh -->
+            <div class="tab-pane fade" id="export" role="tabpanel" aria-labelledby="export-tab">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Nhập danh sách lớp</h5>
+                        <form id="classForm">
+                            <div class="mb-3">
+                                <label for="classFile" class="form-label">File Excel danh sách lớp</label>
+                                <input type="file" class="form-control" id="classFile" accept=".xlsx, .xls" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="filterDate" class="form-label">Ngày học</label>
+                                    <input type="date" class="form-control" id="filterDate" required>
+                                </div>
+                                <div class="col-md-3" id="timeFilter" style="display: none;">
+                                    <label class="form-label">Khoảng thời gian</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="time" class="form-control" id="filterStartTime" required>
+                                        </div>
+                                        <div class="col">
+                                            <input type="time" class="form-control" id="filterEndTime" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterRoom" class="form-label">Phòng học</label>
+                                    <select class="form-select" id="filterRoom" required>
+                                        <option value="">Chọn phòng</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary">Kiểm tra điểm danh</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Kết quả điểm danh -->
+                <div id="attendanceResult" style="display: none;">
+                    <h5>Kết quả điểm danh</h5>
+                    <button id="exportBtn" class="btn btn-success mb-3">Xuất file Excel</button>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Số thứ tự</th>
+                                <th>Mã SV</th>
+                                <th>Họ tên</th>
+                                <th>Lớp</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceList"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

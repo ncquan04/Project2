@@ -1,5 +1,6 @@
 import { API_BASE_URL } from './config.js';
 import { handleError } from '/server_diem_danh/public/assets/js/utils.js';
+import { readExcelFile } from '/server_diem_danh/public/assets/js/excelUtils.js';
 
 //File này chứa các hàm liên quan đến quản lý sinh viên như load, add, edit, delete.
 
@@ -109,6 +110,35 @@ export async function deleteStudent(studentId) {
         return true;
     } catch (error) {
         handleError(error, 'Đã có lỗi xảy ra khi xóa sinh viên');
+        return false;
+    }
+}
+
+export async function importStudentsFromExcel(file) {
+    try {
+        const excelData = await readExcelFile(file);
+        const studentData = excelData.map(row => ({
+            student_id: row['Mã số sinh viên'],
+            rfid_uid: row['RFID'],
+            full_name: row['Họ và tên'],
+            class: row['Lớp']
+        }));
+        const response = await fetch('/server_diem_danh/api/admin/bulk_add_students.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ students: studentData })
+        });
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            return true;
+        } else {
+            alert('Import thất bại: ' + result.message);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error importing students:', error);
+        alert('Đã có lỗi xảy ra khi import sinh viên');
         return false;
     }
 }

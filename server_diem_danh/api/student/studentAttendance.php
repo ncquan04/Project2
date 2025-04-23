@@ -43,7 +43,7 @@ switch ($action) {
     default:
         // Xử lý lấy lịch sử điểm danh (mặc định)
         $filters = json_decode(file_get_contents('php://input'), true) ?? [];
-        $query = "SELECT attendance_id, student_id, rfid_uid, checkin_time, room 
+        $query = "SELECT attendance_id, student_id, checkin_time, room 
                   FROM attendance 
                   WHERE student_id = ?";
         $params = [$student_id];

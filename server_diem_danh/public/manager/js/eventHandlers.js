@@ -3,6 +3,7 @@ import { loadRooms } from '/server_diem_danh/public/assets/js/attendanceFilter.j
 import { checkAttendance, displayAttendanceResult, exportToExcel } from './classManagement.js';
 import { validateFilters, createFilterObject } from '/server_diem_danh/public/assets/js/filterUtils.js';
 import { logout, handleError } from '/server_diem_danh/public/assets/js/utils.js';
+import { addEntry, collectEntries, showConfirmation, submitAttendance, resetForm } from './manualAttendance.js';
 
 let classData = []; // Lưu dữ liệu điểm danh
 
@@ -10,7 +11,7 @@ let classData = []; // Lưu dữ liệu điểm danh
  * Thiết lập tất cả các sự kiện DOM cho dashboard manager.
  */
 export async function setupEventListeners() {
-    // Load danh sách phòng học
+    // Load danh sách phòng học cho tab "Xuất thông tin điểm danh"
     try {
         const rooms = await loadRooms();
         const roomSelect = document.getElementById('filterRoom');
@@ -22,7 +23,7 @@ export async function setupEventListeners() {
         handleError(error, 'Không thể load danh sách phòng');
     }
 
-    // Submit form kiểm tra điểm danh
+    // Sự kiện cho tab "Xuất thông tin điểm danh"
     document.getElementById('classForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -48,11 +49,33 @@ export async function setupEventListeners() {
         }
     });
 
-    // Xuất file Excel
     document.getElementById('exportBtn').addEventListener('click', () => {
         exportToExcel(classData);
     });
 
-    // Đăng xuất
+    // Sự kiện cho tab "Ghi điểm danh thủ công"
+    document.getElementById('addEntryBtn').addEventListener('click', addEntry);
+
+    document.getElementById('manualAttendanceForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const entries = collectEntries();
+        if (entries.length === 0) {
+            alert('Vui lòng nhập ít nhất một dòng dữ liệu');
+            return;
+        }
+        showConfirmation(entries);
+        // Lưu entries vào biến toàn cục để sử dụng trong confirmBtn
+        window.manualEntries = entries;
+    });
+
+    document.getElementById('confirmBtn').addEventListener('click', async () => {
+        await submitAttendance(window.manualEntries);
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+        document.getElementById('confirmationTable').style.display = 'none';
+    });
+
+    // Sự kiện đăng xuất (chung cho cả hai tab)
     document.getElementById('logoutBtn').addEventListener('click', logout);
 }

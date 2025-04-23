@@ -11,7 +11,6 @@ function createAttendanceRow(record) {
         <tr>
             <td>${record.attendance_id}</td>
             <td>${record.student_id}</td>
-            <td>${record.rfid_uid}</td>
             <td>${record.checkin_time}</td>
             <td>${record.room}</td>
         </tr>

@@ -81,13 +81,13 @@ if ($result->num_rows > 0) {
     $full_name = strtoupper($row['full_name']);
 
     // Ghi dữ liệu điểm danh
-    $sql = "INSERT INTO attendance (student_id, rfid_uid, room) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO attendance (student_id, room) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         sendError("Lỗi chuẩn bị truy vấn điểm danh", 500, $conn->error);
     }
 
-    if (!$stmt->bind_param("sss", $student_id, $rfid_uid, $room)) {
+    if (!$stmt->bind_param("ss", $student_id, $room)) {
         sendError("Lỗi ràng buộc tham số điểm danh", 500, $stmt->error);
     }
 
