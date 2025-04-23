@@ -1,5 +1,10 @@
 <?php
 // api/admin/students.php
+
+// Tắt hiển thị lỗi trực tiếp
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+
 require_once __DIR__ . '/../../config/config.php'; // Kết nối database
 require_once __DIR__ . '/../../modules/Session.php';
 require_once __DIR__ . '/../../modules/Response.php';
@@ -35,6 +40,7 @@ switch ($action) {
         $data = json_decode(file_get_contents('php://input'), true);
         if (!isset($data['student_id'], $data['full_name'], $data['class'], $data['rfid_uid'])) {
             Response::json(["error" => "Missing required fields"], 400);
+            exit;
         }
         $stmt = $conn->prepare("SELECT student_id FROM students WHERE student_id = ?");
         $stmt->bind_param("s", $data['student_id']);
@@ -42,6 +48,7 @@ switch ($action) {
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             Response::json(["error" => "Mã sinh viên đã tồn tại"], 409);
+            exit;
         }
         $stmt = $conn->prepare("INSERT INTO students (student_id, full_name, class, rfid_uid) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $data['student_id'], $data['full_name'], $data['class'], $data['rfid_uid']);
@@ -57,6 +64,7 @@ switch ($action) {
         $data = json_decode(file_get_contents('php://input'), true);
         if (!isset($data['student_id'], $data['full_name'], $data['class'], $data['rfid_uid'])) {
             Response::json(["error" => "Missing required fields"], 400);
+            exit;
         }
         $stmt = $conn->prepare("UPDATE students SET full_name = ?, class = ?, rfid_uid = ? WHERE student_id = ?");
         $stmt->bind_param("ssss", $data['full_name'], $data['class'], $data['rfid_uid'], $data['student_id']);
@@ -72,16 +80,49 @@ switch ($action) {
         $data = json_decode(file_get_contents('php://input'), true);
         if (!isset($data['student_id'])) {
             Response::json(["error" => "Missing student_id"], 400);
+            exit;
         }
-        $stmt = $conn->prepare("DELETE FROM students WHERE student_id = ?");
-        $stmt->bind_param("s", $data['student_id']);
-        $stmt->execute();
-        Response::json(["success" => true]);
+
+        try {
+            // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+            $conn->begin_transaction();
+
+            // Xóa các bản ghi liên quan trong bảng attendance
+            $stmt = $conn->prepare("DELETE FROM attendance WHERE student_id = ?");
+            $stmt->bind_param("s", $data['student_id']);
+            $stmt->execute();
+
+            // Xóa các bản ghi liên quan trong bảng users
+            $stmt = $conn->prepare("DELETE FROM users WHERE student_id = ?");
+            $stmt->bind_param("s", $data['student_id']);
+            $stmt->execute();
+
+            // Xóa sinh viên từ bảng students
+            $stmt = $conn->prepare("DELETE FROM students WHERE student_id = ?");
+            $stmt->bind_param("s", $data['student_id']);
+            $stmt->execute();
+
+            // Commit transaction
+            $conn->commit();
+
+            Response::json(["success" => true]);
+        } catch (mysqli_sql_exception $e) {
+            // Rollback transaction nếu có lỗi
+            $conn->rollback();
+            Response::json(["error" => "Không thể xóa sinh viên do lỗi cơ sở dữ liệu: " . $e->getMessage()], 500);
+        } catch (Exception $e) {
+            $conn->rollback();
+            Response::json(["error" => "Lỗi server: " . $e->getMessage()], 500);
+        } finally {
+            if (isset($stmt)) {
+                $stmt->close();
+            }
+        }
         break;
 
     case 'attendance':
         $filters = json_decode(file_get_contents('php://input'), true);
-        $query = "SELECT attendance_id, student_id, rfid_uid, checkin_time, room FROM attendance WHERE 1=1";
+        $query = "SELECT attendance_id, student_id, checkin_time, room FROM attendance WHERE 1=1";
         $params = [];
         $types = "";
         if (!empty($filters['date'])) {
@@ -94,6 +135,7 @@ switch ($action) {
             $endTime = strtotime($filters['endTime']);
             if ($startTime === false || $endTime === false || $startTime >= $endTime) {
                 Response::json(["error" => "Khoảng thời gian không hợp lệ"], 400);
+                exit;
             }
             $query .= " AND TIME(checkin_time) BETWEEN ? AND ?";
             $params[] = $filters['startTime'];
@@ -122,6 +164,50 @@ switch ($action) {
         Response::json(["success" => true, "rooms" => $rooms]);
         break;
 
+    case 'manual_attendance':
+        if ($_SESSION['role'] !== 'manager') {
+            Response::json(["error" => "Unauthorized"], 403);
+            exit;
+        }
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!isset($data['entries']) || !is_array($data['entries'])) {
+            Response::json(["error" => "Dữ liệu không hợp lệ"], 400);
+            exit;
+        }
+
+        try {
+            $conn->begin_transaction();
+            $stmt = $conn->prepare("INSERT INTO attendance (student_id, room) VALUES (?, ?)");
+
+            foreach ($data['entries'] as $entry) {
+                $student_id = $entry['student_id'];
+                $room = $entry['room'];
+
+                // Kiểm tra student_id tồn tại
+                $checkStmt = $conn->prepare("SELECT student_id FROM students WHERE student_id = ?");
+                $checkStmt->bind_param("s", $student_id);
+                $checkStmt->execute();
+                $result = $checkStmt->get_result();
+                if ($result->num_rows === 0) {
+                    throw new Exception("Sinh viên không tồn tại: $student_id");
+                }
+
+                $stmt->bind_param("ss", $student_id, $room);
+                $stmt->execute();
+            }
+
+            $conn->commit();
+            Response::json(["success" => true, "message" => "Ghi điểm danh thành công"]);
+        } catch (Exception $e) {
+            $conn->rollback();
+            Response::json(["error" => "Lỗi khi ghi điểm danh: " . $e->getMessage()], 500);
+        } finally {
+            if (isset($stmt)) $stmt->close();
+            if (isset($checkStmt)) $checkStmt->close();
+        }
+        break;
+
     default:
         Response::json(["error" => "Invalid action"], 400);
 }
+?>
