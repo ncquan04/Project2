@@ -189,3 +189,16 @@
 [2025-04-21 21:46:20] Login failed for username: sv001
 [2025-04-21 21:46:29] User sv001 logged in successfully.
 [2025-04-21 21:47:36] User logged out successfully from IP: ::1
+[2025-04-23 05:32:16] Login failed for username: admin
+[2025-04-23 05:32:25] Login failed for username: admin
+[2025-04-23 05:35:45] Login failed for username: admin
+[2025-04-23 05:35:46] Login failed for username: admin
+[2025-04-23 05:36:27] Login failed for username: admin
+[2025-04-23 05:40:18] Login failed for username: admin
+[2025-04-23 05:40:55] Login failed for username: admin
+[2025-04-23 05:45:13] Login failed for username: admin - Password mismatch
+[2025-04-23 05:45:20] Login failed for username: admin - Password mismatch
+[2025-04-23 05:51:23] Người dùng admin đăng nhập thành công
+[2025-04-23 06:08:31] Người dùng admin đăng nhập thành công
+[2025-04-23 06:09:47] Người dùng admin đăng nhập thành công
+[2025-04-23 06:10:04] Người dùng admin đăng nhập thành công

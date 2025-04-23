@@ -1,0 +1,183 @@
+2025-04-23 05:35:45 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:35:46 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:36:22 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:36:22 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:36:27 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:37:33 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:35 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:35 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:36 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:36 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:36 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:38 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:37:38 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:37:43 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:37:46 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Rate limit exceeded for IP: ::1
+2025-04-23 05:40:18 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:40:30 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:40:30 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:40:55 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:45:13 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:45:15 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:45:15 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:45:20 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-23 05:51:23 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+2025-04-23 05:55:31 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 05:55:31 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:02:04 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:02:04 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:08:24 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:08:24 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:08:25 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-23 06:08:31 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+2025-04-23 06:09:40 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:09:40 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:09:41 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-23 06:09:47 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+2025-04-23 06:09:52 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:09:52 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:09:58 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:09:58 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-23 06:09:59 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-23 06:10:04 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin

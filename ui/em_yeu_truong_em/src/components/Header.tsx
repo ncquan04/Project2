@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/images/logo.webp';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ArrowDownIcon from '../assets/icons/ArrownDownIcon';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,6 +8,30 @@ const Header = () => {
     const navigate = useNavigate();
     const [logoutModalVisible, setLogoutModalVisible] = useState(false);
     const { logout, user } = useAuth();
+    const [displayName, setDisplayName] = useState('');
+    
+    useEffect(() => {
+        console.log("Header component - Current user object:", user);
+        
+        if (user) {
+            // Kiểm tra trực tiếp đối tượng user
+            console.log("User type:", typeof user);
+            console.log("User has username property:", Object.prototype.hasOwnProperty.call(user, 'username'));
+            
+            // Ưu tiên sử dụng username từ user object
+            if (user.username) {
+                setDisplayName(user.username);
+                console.log("Using username from user object:", user.username);
+            } else {
+                // Fallback nếu không có username
+                setDisplayName("Người dùng");
+                console.log("No username found in user object, using default");
+            }
+        } else {
+            setDisplayName("Người dùng");
+            console.log("No user object, using default name");
+        }
+    }, [user]);
 
     const handleLogout = async () => {
         setLogoutModalVisible(false);
@@ -21,6 +45,7 @@ const Header = () => {
                 src={logo}
                 width={60}
                 height={60}
+                alt="Logo"
             />
             <div className='flex flex-row items-center w-[60%] h-[30%] pl-20 pr-8'>
                 <div 
@@ -46,7 +71,7 @@ const Header = () => {
                     onClick={() => setLogoutModalVisible(!logoutModalVisible)}
                 >
                     <span className='text-black text-base font-medium'>Xin chào</span>
-                    <span className='text-black text-xl font-bold ml-2'>{user?.full_name}</span>
+                    <span className='text-black text-xl font-bold ml-2'>{displayName}</span>
                     <ArrowDownIcon className='w-4 h-4 ml-2' />
                     
                     {logoutModalVisible && (

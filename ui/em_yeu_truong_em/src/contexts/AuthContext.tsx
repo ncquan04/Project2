@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await checkAuth();
         
         if (response.success && response.user) {
+          console.log('Auth verification - Received user data:', JSON.stringify(response.user));
           setUser(response.user);
           setIsAuthenticated(true);
         } else {
@@ -68,8 +69,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setError(null);
       
       const response = await loginApi(username, password);
+      console.log('Login API response:', JSON.stringify(response));
       
       if (response.success && response.user) {
+        console.log('Setting user data in context:', JSON.stringify(response.user));
         setUser(response.user);
         setIsAuthenticated(true);
         return { success: true, message: response.message };

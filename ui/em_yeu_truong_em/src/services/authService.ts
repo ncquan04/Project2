@@ -2,10 +2,11 @@
 export interface User {
   user_id: number;
   username: string;
-  email: string;
-  full_name: string;
-  role_id: number;
-  role_name: string;
+  email?: string;
+  full_name?: string;
+  role?: string;
+  role_id?: number;
+  role_name?: string;
   student_id?: string;
   rfid_uid?: string;
   class?: string;
@@ -18,6 +19,8 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   user?: User;
+  role?: string;
+  redirect?: string;
 }
 
 // URL Backend API
@@ -51,7 +54,32 @@ export const login = async (username: string, password: string): Promise<AuthRes
     }
 
     const data = await response.json();
-    console.log('Kết quả đăng nhập:', data);
+    console.log('Raw API response:', data);
+    
+    // Kiểm tra và xử lý dữ liệu user
+    if (data.success && data.user) {
+      console.log('User data from API:', data.user);
+      
+      // Đảm bảo User object có đủ thông tin cần thiết
+      const processedUser: User = {
+        user_id: data.user.user_id,
+        username: data.user.username,
+        role: data.role || data.user.role, // Lấy role từ data.role hoặc data.user.role
+        student_id: data.user.student_id
+      };
+      
+      console.log('Processed user object:', processedUser);
+      
+      // Trả về đối tượng mới với user đã xử lý
+      return {
+        success: data.success,
+        message: data.message,
+        user: processedUser,
+        role: data.role,
+        redirect: data.redirect
+      };
+    }
+    
     return data;
   } catch (error) {
     console.error('Login error:', error);

@@ -13,10 +13,22 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/../logs/error.log');
 
-// Thiết lập security headers
+// Thiết lập security headers và CORS
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
+
+// Thêm CORS headers
+header("Access-Control-Allow-Origin: http://localhost:5173"); // Thay bằng domain của frontend
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Credentials: true");
+
+// Xử lý preflight request OPTIONS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Kiểm tra session hiện tại
 checkSessionAndRespond(true);
@@ -40,7 +52,7 @@ if (stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
 } elseif (stripos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') !== false) {
     $input = $_POST;
 } else {
-    Response::json(["error" => "Unsupported Media Type", "details" => "Content-Type must be application/json or application/x-www-form-urlencoded"], 415);
+    Response::json(["error" => "Unsupported Media Type", "details" => "Content-Type must be application/json hoặc application/x-www-form-urlencoded"], 415);
 }
 
 // Kiểm tra CSRF token
