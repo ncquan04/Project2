@@ -17,17 +17,36 @@ CREATE TABLE students (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Bảng giáo viên
+CREATE TABLE teachers (
+    teacher_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    department VARCHAR(50),
+    position VARCHAR(50),
+    email VARCHAR(100),
+    phone VARCHAR(15),
+    address VARCHAR(255),
+    employee_id VARCHAR(20) UNIQUE,
+    specialization VARCHAR(100),
+    join_date DATE,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Bảng người dùng (admin, giáo viên, sinh viên, phụ huynh)
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'manager', 'student', 'parent') NOT NULL,
+    role ENUM('admin', 'manager', 'teacher', 'student', 'parent') NOT NULL,
     student_id VARCHAR(20) NULL,
+    teacher_id INT NULL,
     email VARCHAR(100),
     last_login TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
+    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE CASCADE
 );
 
 -- Bảng môn học
@@ -55,7 +74,7 @@ CREATE TABLE classes (
     end_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE CASCADE
 );
 
 -- Bảng đăng ký học phần (liên kết sinh viên với các lớp học)
@@ -297,8 +316,26 @@ CREATE INDEX idx_attendance_course_time ON attendance(course_id, checkin_time);
 CREATE INDEX idx_classes_schedule ON classes(schedule_day, start_time, end_time);
 CREATE INDEX idx_class_semester ON classes(semester);
 CREATE INDEX idx_attendance_queue_processed ON attendance_course_queue(processed);
+CREATE INDEX idx_teachers_name ON teachers(full_name);
+CREATE INDEX idx_teachers_department ON teachers(department);
+CREATE INDEX idx_teachers_status ON teachers(status);
 
--- Dữ liệu mẫu cho admin
-INSERT INTO users (username, password, role, email) 
-VALUES ('admin', '$2y$10$JpZJdHuaXNwGE3kwoL7vzOcDLrI4.ljd/M1b/C5vHWlmyxfJO7Kpe', 'admin', 'admin@example.com');
--- Mật khẩu admin123
+-- Bảng quản lý thay đổi lịch học
+CREATE TABLE class_schedule_changes (
+    schedule_change_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_id INT NOT NULL,
+    original_date DATE NOT NULL,
+    new_date DATE NULL,
+    status ENUM('cancelled', 'rescheduled', 'room_change') NOT NULL,
+    original_room VARCHAR(10) NULL,
+    new_room VARCHAR(10) NULL,
+    reason TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    notification_sent BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Chỉ mục để tối ưu truy vấn thay đổi lịch học
+CREATE INDEX idx_schedule_changes_class ON class_schedule_changes(class_id);
+CREATE INDEX idx_schedule_changes_dates ON class_schedule_changes(original_date, new_date);
