@@ -6,3 +6,13 @@
 2025-04-23 05:47:17 - Kiểm tra xác thực với mật khẩu 'admin123': THẤT BẠI
 2025-04-23 05:47:18 - Đã cập nhật mật khẩu cho tài khoản admin thành công!
 2025-04-23 05:47:18 - Quá trình sửa chữa hoàn tất.
+2025-04-25 07:14:12 - Bắt đầu quá trình kiểm tra và sửa tài khoản admin
+2025-04-25 07:14:12 - Tài khoản admin đã tồn tại với ID: 23
+2025-04-25 07:14:12 - Hash mật khẩu hiện tại: $2y$10$JpZJdHuaXNwGE3kwoL7vzOc...
+2025-04-25 07:14:12 - Kết quả xác thực mật khẩu với password_verify: FALSE
+2025-04-25 07:14:12 - MD5 hash của admin123: 0192023a7bbd73250516f069df18b500
+2025-04-25 07:14:12 - SHA1 hash của admin123: f865b53623b121fd34ee5426c792e5c33af8c227
+2025-04-25 07:14:12 - Mật khẩu hiện tại không phải MD5 hoặc SHA1 của admin123.
+2025-04-25 07:14:12 - Hash mật khẩu mới: $2y$10$jsAlIaV.tOg3/CsHA2w/i.3...
+2025-04-25 07:14:12 - Đã cập nhật mật khẩu admin thành công!
+2025-04-25 07:14:12 - Hoàn thành quá trình kiểm tra và sửa tài khoản admin

@@ -1,73 +1,91 @@
 <?php
-// api/fix_admin_account.php - Script để sửa chữa tài khoản admin
+// api/fix_admin_account.php
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../modules/Logger.php';
 
-// Hàm tạo log
-function writeLog($message) {
-    echo "$message<br>";
-    $logFile = __DIR__ . '/../logs/fix_admin_account.log';
+// Tạo file log riêng cho việc sửa tài khoản admin
+$logFile = __DIR__ . '/../logs/fix_admin_account.log';
+function log_message($message) {
+    global $logFile;
     file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+    echo $message . "<br>";
 }
 
-writeLog("Bắt đầu sửa chữa tài khoản admin...");
+log_message("Bắt đầu quá trình kiểm tra và sửa tài khoản admin");
 
-// Kiểm tra kết nối cơ sở dữ liệu
+// Kiểm tra kết nối database
 if (!$conn) {
-    writeLog("Lỗi: Không thể kết nối đến cơ sở dữ liệu.");
-    exit;
+    log_message("Lỗi kết nối database: " . mysqli_connect_error());
+    die("Kết nối database thất bại");
 }
-writeLog("Kết nối cơ sở dữ liệu thành công!");
 
-// Kiểm tra xem đã có tài khoản admin chưa
-$stmt = $conn->prepare("SELECT user_id, password FROM users WHERE username = 'admin'");
+// Kiểm tra tài khoản admin có tồn tại không
+$stmt = $conn->prepare("SELECT user_id, username, password FROM users WHERE username = 'admin'");
 $stmt->execute();
 $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    $user_id = $user['user_id'];
-    $current_hash = $user['password'];
+if ($result->num_rows === 0) {
+    log_message("Tài khoản admin không tồn tại. Đang tạo tài khoản admin mới...");
     
-    // Cập nhật mật khẩu mới
-    $new_hash = password_hash('admin123', PASSWORD_DEFAULT);
-    writeLog("Tài khoản admin đã tồn tại (ID: $user_id)");
-    writeLog("Hash mật khẩu hiện tại: $current_hash");
-    writeLog("Hash mật khẩu mới: $new_hash");
+    // Tạo tài khoản admin mới
+    $username = 'admin';
+    $password = password_hash('admin123', PASSWORD_DEFAULT);
+    $role = 'admin';
     
-    // Thử xác thực với mật khẩu cũ
-    $verify_result = password_verify('admin123', $current_hash);
-    writeLog("Kiểm tra xác thực với mật khẩu 'admin123': " . ($verify_result ? "THÀNH CÔNG" : "THẤT BẠI"));
+    $stmt = $conn->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $username, $password, $role);
     
-    if (!$verify_result) {
-        // Cập nhật mật khẩu
-        $update_stmt = $conn->prepare("UPDATE users SET password = ? WHERE user_id = ?");
-        $update_stmt->bind_param("si", $new_hash, $user_id);
-        
-        if ($update_stmt->execute()) {
-            writeLog("Đã cập nhật mật khẩu cho tài khoản admin thành công!");
-        } else {
-            writeLog("Lỗi khi cập nhật mật khẩu: " . $conn->error);
-        }
+    if ($stmt->execute()) {
+        log_message("Đã tạo tài khoản admin mới thành công!");
     } else {
-        writeLog("Mật khẩu hiện tại đã đúng, không cần cập nhật.");
+        log_message("Lỗi khi tạo tài khoản admin: " . $stmt->error);
     }
 } else {
-    // Tạo tài khoản admin mới
-    $hash = password_hash('admin123', PASSWORD_DEFAULT);
-    writeLog("Không tìm thấy tài khoản admin, đang tạo mới...");
-    writeLog("Hash mật khẩu mới: $hash");
+    $admin = $result->fetch_assoc();
+    log_message("Tài khoản admin đã tồn tại với ID: " . $admin['user_id']);
     
-    $insert_stmt = $conn->prepare("INSERT INTO users (username, password, role, email) VALUES (?, ?, 'admin', 'admin@example.com')");
-    $insert_stmt->bind_param("ss", $admin_username, $hash);
-    $admin_username = 'admin';
+    // Kiểm tra mật khẩu hiện tại
+    $storedHash = $admin['password'];
+    $plainPassword = 'admin123';
     
-    if ($insert_stmt->execute()) {
-        writeLog("Đã tạo tài khoản admin mới thành công!");
+    log_message("Hash mật khẩu hiện tại: " . substr($storedHash, 0, 30) . "...");
+    
+    // Thử xác thực với mật khẩu mặc định
+    $passwordVerifies = password_verify($plainPassword, $storedHash);
+    log_message("Kết quả xác thực mật khẩu với password_verify: " . ($passwordVerifies ? "TRUE" : "FALSE"));
+    
+    if (!$passwordVerifies) {
+        // Kiểm tra xem mật khẩu có phải là md5 hoặc sha1
+        $md5Hash = md5($plainPassword);
+        $sha1Hash = sha1($plainPassword);
+        
+        log_message("MD5 hash của admin123: " . $md5Hash);
+        log_message("SHA1 hash của admin123: " . $sha1Hash);
+        
+        if ($storedHash === $md5Hash) {
+            log_message("Phát hiện mật khẩu lưu dưới dạng MD5. Cần cập nhật sang password_hash.");
+        } elseif ($storedHash === $sha1Hash) {
+            log_message("Phát hiện mật khẩu lưu dưới dạng SHA1. Cần cập nhật sang password_hash.");
+        } else {
+            log_message("Mật khẩu hiện tại không phải MD5 hoặc SHA1 của admin123.");
+        }
+        
+        // Cập nhật mật khẩu bằng password_hash
+        $newPasswordHash = password_hash($plainPassword, PASSWORD_DEFAULT);
+        log_message("Hash mật khẩu mới: " . substr($newPasswordHash, 0, 30) . "...");
+        
+        $updateStmt = $conn->prepare("UPDATE users SET password = ? WHERE username = 'admin'");
+        $updateStmt->bind_param("s", $newPasswordHash);
+        
+        if ($updateStmt->execute()) {
+            log_message("Đã cập nhật mật khẩu admin thành công!");
+        } else {
+            log_message("Lỗi khi cập nhật mật khẩu admin: " . $updateStmt->error);
+        }
     } else {
-        writeLog("Lỗi khi tạo tài khoản admin: " . $conn->error);
+        log_message("Mật khẩu admin hiện tại đã được hash đúng cách và có thể xác thực thành công.");
     }
 }
 
-writeLog("Quá trình sửa chữa hoàn tất.");
-echo "<p><a href='/server_diem_danh/api/auth_api.php?action=login'>Thử đăng nhập</a></p>";
+log_message("Hoàn thành quá trình kiểm tra và sửa tài khoản admin");
 ?>

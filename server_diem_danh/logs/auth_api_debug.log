@@ -181,3 +181,428 @@ Action: login
 Raw input: {"username":"admin","password":"admin123"}
 Username: admin
 Login successful for username: admin
+2025-04-25 07:06:20 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:06:20 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:06:20 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:06:26 - Request received
+Origin: http://localhost:5173
+2025-04-25 07:06:26 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:06:27 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:06:28 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:06:33 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:09:32 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:09:34 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:09:34 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:09:38 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:10:37 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:10:37 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login failed for username: admin
+2025-04-25 07:13:35 - Request received
+Origin: 
+Action: 
+2025-04-25 07:14:19 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+2025-04-25 07:14:32 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-25 07:18:22 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login failed for username: sv001
+2025-04-25 07:26:18 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 07:26:39 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:26:39 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:32:13 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:32:13 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:32:29 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:32:29 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:37:57 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:37:57 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:38:01 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:38:01 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:43:45 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 07:43:52 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:43:52 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:43:56 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-25 07:43:59 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:43:59 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:46:42 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:46:42 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:50:45 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 07:50:48 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:50:48 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:51:01 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:51:02 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:51:34 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 07:51:34 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:35 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:35 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:36 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:36 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:43 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 08:03:46 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:46 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:03:52 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 08:07:26 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:07:26 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:07:31 - Request received
+Origin: http://localhost:5173
+2025-04-25 08:07:31 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 08:07:35 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:07:35 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:07:47 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-25 08:07:53 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 08:10:59 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-25 08:11:05 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-25 08:24:03 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:24:03 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-25 08:24:08 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 04:18:17 - Request received
+Origin: http://localhost:5173
+2025-04-27 04:18:17 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 04:18:31 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:18:31 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:18:36 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 04:31:55 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:31:55 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:32:00 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+2025-04-27 04:33:12 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 04:50:13 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:50:13 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:50:17 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123\\"}
+Username: sv001
+2025-04-27 04:50:17 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123\\"}
+Username: sv001
+Login failed for username: sv001
+Login failed for username: sv001
+2025-04-27 04:50:19 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 04:50:28 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 04:50:28 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:04:32 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:04:33 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:04:33 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:04:33 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:04:34 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:04:42 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:16:05 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:16:05 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:16:10 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:18:41 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:18:41 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:18:45 - Request received
+Origin: http://localhost:5173
+2025-04-27 05:18:45 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:26:00 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:26:00 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:26:05 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:27:54 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:27:54 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:27:58 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:27:58 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:28:02 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+2025-04-27 05:28:09 - Request received
+Origin: http://localhost:5173
+Action: logout
+2025-04-27 05:28:14 - Request received
+Origin: http://localhost:5173
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+2025-04-27 05:28:40 - Request received
+Origin: http://localhost:5173
+Action: check_auth
+2025-04-27 05:28:40 - Request received
+Origin: http://localhost:5173
+Action: check_auth

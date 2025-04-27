@@ -14,6 +14,24 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     
+    // Hàm chuyển hướng đến trang phù hợp với vai trò người dùng
+    const redirectBasedOnRole = (role: string | undefined) => {
+        switch (role) {
+            case 'student':
+                navigate('/student');
+                break;
+            case 'teacher':
+                navigate('/teacher');
+                break;
+            case 'admin':
+                navigate('/admin');
+                break;
+            default:
+                navigate('/home');
+                break;
+        }
+    };
+    
     const handleSubmitLogin = async (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         
@@ -26,7 +44,8 @@ const LoginPage = () => {
             const result = await login(username, password);
             
             if (result.success) {
-                navigate('/home');
+                // Lấy thông tin vai trò từ kết quả đăng nhập và chuyển hướng tương ứng
+                redirectBasedOnRole(result.role);
             } else {
                 setError(result.message);
             }
@@ -56,7 +75,7 @@ const LoginPage = () => {
                 )}
                 
                 <div className='flex flex-col w-full'>
-                    <div className='flex flex-col border-2 border-b-gray-300'>
+                    <div className='flex flex-col'>
                         <span className='text-lg text-black mr-auto'>Tài khoản</span>
                         <div className='flex flex-row items-center border rounded px-3 py-2 mt-2'>
                             <UserIcon width={20} height={20} className="text-black mr-2" />
@@ -69,7 +88,7 @@ const LoginPage = () => {
                             />
                         </div>
                     </div>
-                    <div className='flex flex-col border-2 border-b-gray-300'>
+                    <div className='flex flex-col'>
                         <span className='text-lg text-black mr-auto mt-8'>Mật khẩu</span>
                         <div className='flex flex-row items-center border rounded px-3 py-2 mt-2'>
                             <LockIcon width={20} height={20} className="text-gray-300 mr-2" />

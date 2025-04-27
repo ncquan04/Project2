@@ -24,7 +24,7 @@ export interface AuthResponse {
 }
 
 // URL Backend API
-const API_URL = 'http://localhost/server_diem_danh/api';
+export const API_URL = 'http://localhost/server_diem_danh/api';
 
 /**
  * Hàm đăng nhập

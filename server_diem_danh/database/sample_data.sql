@@ -343,5 +343,171 @@ VALUES
 ('SV014', 1, 15, 8, NOW()),
 ('SV015', 1, 15, 15, NOW());
 
+-- Thêm nhiều dữ liệu điểm danh hơn cho các lớp khác
+-- Điểm danh cho lớp CSC501.01 (Thứ 6, phòng P501)
+INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, verified, notes)
+VALUES
+('SV001', 'RFID001', '2025-04-25 07:25:00', 'P501', TRUE, 'Đúng giờ'),
+('SV002', 'RFID002', '2025-04-25 07:28:00', 'P501', TRUE, 'Đúng giờ'),
+('SV001', 'RFID001', '2025-04-18 07:25:00', 'P501', TRUE, 'Đúng giờ'),
+('SV002', 'RFID002', '2025-04-18 07:50:00', 'P501', TRUE, 'Đi trễ 20 phút'),
+('SV001', 'RFID001', '2025-04-11 07:28:00', 'P501', TRUE, 'Đúng giờ'),
+('SV002', 'RFID002', '2025-04-11 07:31:00', 'P501', TRUE, 'Đúng giờ'),
+('SV001', 'RFID001', '2025-04-04 07:27:00', 'P501', TRUE, 'Đúng giờ'),
+('SV002', 'RFID002', '2025-04-04 07:29:00', 'P501', TRUE, 'Đúng giờ');
+
+-- Điểm danh cho lớp CSC102.01 (Thứ 2 buổi chiều, phòng P102)
+INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, verified, notes)
+VALUES
+('SV003', 'RFID003', '2025-04-21 12:55:00', 'P102', TRUE, 'Đúng giờ'),
+('SV004', 'RFID004', '2025-04-21 12:58:00', 'P102', TRUE, 'Đúng giờ'),
+('SV003', 'RFID003', '2025-04-14 12:55:00', 'P102', TRUE, 'Đúng giờ'),
+('SV004', 'RFID004', '2025-04-14 13:20:00', 'P102', TRUE, 'Đi trễ 20 phút'),
+('SV003', 'RFID003', '2025-04-07 12:58:00', 'P102', TRUE, 'Đúng giờ'),
+('SV004', 'RFID004', '2025-04-07 13:01:00', 'P102', TRUE, 'Đúng giờ');
+
+-- Điểm danh cho lớp CSC202.01 (Thứ 3, phòng P202)
+INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, verified, notes)
+VALUES
+('SV005', 'RFID005', '2025-04-22 07:20:00', 'P202', TRUE, 'Đúng giờ'),
+('SV006', 'RFID006', '2025-04-22 07:25:00', 'P202', TRUE, 'Đúng giờ'),
+('SV005', 'RFID005', '2025-04-15 07:20:00', 'P202', TRUE, 'Đúng giờ'),
+('SV006', 'RFID006', '2025-04-15 07:40:00', 'P202', TRUE, 'Đi trễ 10 phút'),
+('SV005', 'RFID005', '2025-04-08 07:22:00', 'P202', TRUE, 'Đúng giờ'),
+('SV006', 'RFID006', '2025-04-08 07:26:00', 'P202', TRUE, 'Đúng giờ');
+
+-- Điểm danh cho lớp CSC302.01 (Thứ 4, phòng P302)
+INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, verified, notes)
+VALUES
+('SV005', 'RFID005', '2025-04-23 12:58:00', 'P302', TRUE, 'Đúng giờ'),
+('SV006', 'RFID006', '2025-04-23 13:01:00', 'P302', TRUE, 'Đúng giờ'),
+('SV005', 'RFID005', '2025-04-16 12:59:00', 'P302', TRUE, 'Đúng giờ'),
+('SV006', 'RFID006', '2025-04-16 13:20:00', 'P302', TRUE, 'Đi trễ 20 phút'),
+('SV005', 'RFID005', '2025-04-09 12:57:00', 'P302', TRUE, 'Đúng giờ'),
+('SV006', 'RFID006', '2025-04-09 13:05:00', 'P302', TRUE, 'Đúng giờ');
+
+-- Cập nhật bảng attendance_course_queue cho các bản ghi điểm danh mới
+INSERT INTO attendance_course_queue (attendance_id, processed, created_at)
+VALUES
+(25, TRUE, '2025-04-25 07:25:00'),
+(26, TRUE, '2025-04-25 07:28:00'),
+(27, TRUE, '2025-04-18 07:25:00'),
+(28, TRUE, '2025-04-18 07:50:00'),
+(29, TRUE, '2025-04-11 07:28:00'),
+(30, TRUE, '2025-04-11 07:31:00'),
+(31, TRUE, '2025-04-04 07:27:00'),
+(32, TRUE, '2025-04-04 07:29:00'),
+(33, TRUE, '2025-04-21 12:55:00'),
+(34, TRUE, '2025-04-21 12:58:00'),
+(35, TRUE, '2025-04-14 12:55:00'),
+(36, TRUE, '2025-04-14 13:20:00'),
+(37, TRUE, '2025-04-07 12:58:00'),
+(38, TRUE, '2025-04-07 13:01:00'),
+(39, TRUE, '2025-04-22 07:20:00'),
+(40, TRUE, '2025-04-22 07:25:00'),
+(41, TRUE, '2025-04-15 07:20:00'),
+(42, TRUE, '2025-04-15 07:40:00'),
+(43, TRUE, '2025-04-08 07:22:00'),
+(44, TRUE, '2025-04-08 07:26:00'),
+(45, TRUE, '2025-04-23 12:58:00'),
+(46, TRUE, '2025-04-23 13:01:00'),
+(47, TRUE, '2025-04-16 12:59:00'),
+(48, TRUE, '2025-04-16 13:20:00'),
+(49, TRUE, '2025-04-09 12:57:00'),
+(50, TRUE, '2025-04-09 13:05:00');
+
+-- Thêm các sinh viên mới
+INSERT INTO students (student_id, rfid_uid, full_name, class, email, phone, address, parent_name, parent_phone, parent_cccd, created_at) 
+VALUES 
+('SV016', 'RFID016', 'Nguyễn Hải Nam', '21CNTT1', 'nam.nguyenhai@example.com', '0901234576', 'Quận Phú Nhuận, TP HCM', 'Nguyễn Văn Cha', '0912345686', '079123456796', NOW()),
+('SV017', 'RFID017', 'Trần Thanh Thảo', '21CNTT1', 'thao.tranthanh@example.com', '0901234577', 'Quận Gò Vấp, TP HCM', 'Trần Văn Cha', '0912345687', '079123456797', NOW()),
+('SV018', 'RFID018', 'Phạm Công Vinh', '21CNTT1', 'vinh.phamcong@example.com', '0901234578', 'Quận Bình Thạnh, TP HCM', 'Phạm Văn Cha', '0912345688', '079123456798', NOW()),
+('SV019', 'RFID019', 'Lê Thị Hạnh', '21CNTT2', 'hanh.lethi@example.com', '0901234579', 'Quận 3, TP HCM', 'Lê Văn Cha', '0912345689', '079123456799', NOW()),
+('SV020', 'RFID020', 'Võ Quốc Bảo', '21CNTT2', 'bao.voquoc@example.com', '0901234580', 'Quận 10, TP HCM', 'Võ Văn Cha', '0912345690', '079123456800', NOW());
+
+-- Tài khoản cho sinh viên mới
+INSERT INTO users (username, password, role, student_id, email, created_at) 
+VALUES 
+('sv016', '$2y$10$JpZJdHuaXNwGE3kwoL7vzOcDLrI4.ljd/M1b/C5vHWlmyxfJO7Kpe', 'student', 'SV016', 'nam.nguyenhai@example.com', NOW()),
+('sv017', '$2y$10$JpZJdHuaXNwGE3kwoL7vzOcDLrI4.ljd/M1b/C5vHWlmyxfJO7Kpe', 'student', 'SV017', 'thao.tranthanh@example.com', NOW()),
+('sv018', '$2y$10$JpZJdHuaXNwGE3kwoL7vzOcDLrI4.ljd/M1b/C5vHWlmyxfJO7Kpe', 'student', 'SV018', 'vinh.phamcong@example.com', NOW()),
+('sv019', '$2y$10$JpZJdHuaXNwGE3kwoL7vzOcDLrI4.ljd/M1b/C5vHWlmyxfJO7Kpe', 'student', 'SV019', 'hanh.lethi@example.com', NOW()),
+('sv020', '$2y$10$JpZJdHuaXNwGE3kwoL7vzOcDLrI4.ljd/M1b/C5vHWlmyxfJO7Kpe', 'student', 'SV020', 'bao.voquoc@example.com', NOW());
+
+-- Thêm các lớp học mới cho kỳ II
+INSERT INTO classes (course_id, teacher_id, class_code, room, semester, schedule_day, start_time, end_time, start_date, end_date, created_at) 
+VALUES 
+(1, 1, 'CSC101.03', 'P104', '2025-2', 'wednesday', '07:30:00', '10:30:00', '2025-07-15', '2025-10-30', NOW()),
+(2, 2, 'CSC201.03', 'P204', '2025-2', 'thursday', '13:00:00', '16:00:00', '2025-07-15', '2025-10-30', NOW()),
+(3, 3, 'CSC301.03', 'P304', '2025-2', 'friday', '07:30:00', '10:30:00', '2025-07-15', '2025-10-30', NOW()),
+(4, 4, 'CSC401.03', 'P404', '2025-2', 'monday', '13:00:00', '16:00:00', '2025-07-15', '2025-10-30', NOW()),
+(5, 5, 'CSC501.03', 'P504', '2025-2', 'tuesday', '07:30:00', '10:30:00', '2025-07-15', '2025-10-30', NOW());
+
+-- Đăng ký sinh viên mới vào các lớp
+INSERT INTO student_classes (student_id, class_id, enrolled_date) 
+VALUES
+('SV016', 16, '2025-06-15'),
+('SV017', 16, '2025-06-15'),
+('SV018', 16, '2025-06-15'),
+('SV019', 17, '2025-06-15'),
+('SV020', 17, '2025-06-15'),
+('SV016', 18, '2025-06-16'),
+('SV017', 18, '2025-06-16'),
+('SV018', 18, '2025-06-16'),
+('SV019', 19, '2025-06-16'),
+('SV020', 19, '2025-06-16');
+
+-- Thêm bảng academic_events nếu chưa tồn tại
+CREATE TABLE IF NOT EXISTS academic_events (
+    event_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    location VARCHAR(100),
+    organizer VARCHAR(100),
+    event_type ENUM('workshop', 'competition', 'career_fair', 'seminar', 'short_course') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Thêm sự kiện học tập
+INSERT INTO academic_events (title, description, start_date, end_date, location, organizer, event_type)
+VALUES 
+('Hội thảo An toàn thông tin', 'Hội thảo về các kỹ thuật bảo mật mới nhất', '2025-05-15', '2025-05-15', 'Hội trường A', 'Khoa CNTT', 'workshop'),
+('Cuộc thi Lập trình', 'Cuộc thi lập trình dành cho sinh viên CNTT', '2025-06-10', '2025-06-12', 'Phòng Lab B2', 'CLB Lập trình', 'competition'),
+('Ngày hội việc làm CNTT', 'Kết nối sinh viên với các nhà tuyển dụng', '2025-07-05', '2025-07-05', 'Sân trường', 'Phòng Công tác sinh viên', 'career_fair'),
+('Seminar về IoT', 'Chia sẻ về công nghệ Internet of Things', '2025-05-20', '2025-05-20', 'Phòng hội thảo C3', 'CLB IoT', 'seminar'),
+('Khóa học Blockchain cơ bản', 'Giới thiệu về công nghệ blockchain', '2025-06-01', '2025-06-05', 'Phòng Lab A1', 'Bộ môn HTTT', 'short_course');
+
+-- Thêm thông báo liên quan đến sự kiện học tập
+INSERT INTO notifications (user_id, title, message, is_read, created_at)
+VALUES
+(1, 'Hội thảo An toàn thông tin', 'Mời bạn tham dự Hội thảo An toàn thông tin vào ngày 15/05/2025', FALSE, NOW()),
+(2, 'Hội thảo An toàn thông tin', 'Mời bạn tham dự Hội thảo An toàn thông tin vào ngày 15/05/2025', FALSE, NOW()),
+(3, 'Cuộc thi Lập trình', 'Đăng ký tham gia Cuộc thi Lập trình từ ngày 10-12/06/2025', FALSE, NOW()),
+(4, 'Cuộc thi Lập trình', 'Đăng ký tham gia Cuộc thi Lập trình từ ngày 10-12/06/2025', FALSE, NOW()),
+(5, 'Ngày hội việc làm CNTT', 'Mời bạn tham dự Ngày hội việc làm CNTT vào ngày 05/07/2025', FALSE, NOW());
+
+-- Cập nhật course_id cho các dữ liệu điểm danh mới
+UPDATE attendance a
+JOIN classes c ON a.room = c.room
+SET a.course_id = c.course_id
+WHERE a.room = 'P501' AND DATE(a.checkin_time) >= '2025-04-04' AND DATE(a.checkin_time) <= '2025-04-25';
+
+UPDATE attendance a
+JOIN classes c ON a.room = c.room
+SET a.course_id = c.course_id
+WHERE a.room = 'P102' AND DATE(a.checkin_time) >= '2025-04-07' AND DATE(a.checkin_time) <= '2025-04-21';
+
+UPDATE attendance a
+JOIN classes c ON a.room = c.room
+SET a.course_id = c.course_id
+WHERE a.room = 'P202' AND DATE(a.checkin_time) >= '2025-04-08' AND DATE(a.checkin_time) <= '2025-04-22';
+
+UPDATE attendance a
+JOIN classes c ON a.room = c.room
+SET a.course_id = c.course_id
+WHERE a.room = 'P302' AND DATE(a.checkin_time) >= '2025-04-09' AND DATE(a.checkin_time) <= '2025-04-23';
+
 -- Kết thúc file dữ liệu mẫu
 COMMIT;

@@ -1,104 +1,128 @@
 <?php
 // api/login.php
-require_once __DIR__ . '/utils.php';
-require_once __DIR__ . '/../modules/Response.php';
+require_once __DIR__ . '/../modules/Auth.php';
+require_once __DIR__ . '/../modules/Session.php';
 require_once __DIR__ . '/../modules/CSRF.php';
 require_once __DIR__ . '/../modules/RateLimiter.php';
 require_once __DIR__ . '/../modules/Logger.php';
-require_once __DIR__ . '/../modules/Auth.php';
+require_once __DIR__ . '/../modules/Response.php';
+require_once __DIR__ . '/../config/config.php';
 
-// Thiết lập error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/../logs/error.log');
+// Khởi động session
+Session::start();
 
-// Thiết lập security headers và CORS
-header("X-Frame-Options: DENY");
-header("X-Content-Type-Options: nosniff");
-header("X-XSS-Protection: 1; mode=block");
-
-// Thêm CORS headers
-header("Access-Control-Allow-Origin: http://localhost:5173"); // Thay bằng domain của frontend
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Credentials: true");
-
-// Xử lý preflight request OPTIONS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
-// Kiểm tra session hiện tại
-checkSessionAndRespond(true);
-
-// Chỉ chấp nhận POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    Response::json(["error" => "Method Not Allowed", "details" => "Only POST method is allowed"], 405);
-}
-
-// Kiểm tra Content-Type
-if (!isset($_SERVER['CONTENT_TYPE'])) {
-    Response::json(["error" => "Unsupported Media Type", "details" => "Content-Type must be set"], 415);
-}
-
-// Đọc dữ liệu đầu vào
-if (stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-    $input = json_decode(file_get_contents('php://input'), true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        Response::json(["error" => "Invalid JSON", "details" => json_last_error_msg()], 400);
-    }
-} elseif (stripos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') !== false) {
-    $input = $_POST;
-} else {
-    Response::json(["error" => "Unsupported Media Type", "details" => "Content-Type must be application/json hoặc application/x-www-form-urlencoded"], 415);
-}
-
-// Kiểm tra CSRF token
-if (!isset($input['csrf_token']) || !CSRF::validate($input['csrf_token'])) {
-    Response::json(["error" => "Invalid CSRF token", "details" => "CSRF token validation failed"], 403);
-}
-
-// Validate và sanitize input
-$username = isset($input['username']) ? trim(strip_tags($input['username'])) : null;
-$password = $input['password'] ?? null;
-
-if (empty($username) || empty($password)) {
-    Response::json(["error" => "Bad Request", "details" => "Username and password are required"], 400);
-}
-
-// Rate limiting
+// Log attempt
+$logger = new Logger('auth_debug');
 $ip = $_SERVER['REMOTE_ADDR'];
-if (!RateLimiter::check($ip)) {
+
+// Tiếp nhận dữ liệu từ form POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || !CSRF::verify($_POST['csrf_token'])) {
+        $logger->log("CSRF token invalid from IP $ip");
+        Response::json(["error" => "CSRF token không hợp lệ"], 403);
+        exit;
+    }
+
+    // Rate limiting - giới hạn số lần đăng nhập
+    $rateLimit = new RateLimiter($ip, 'login', 10, 60 * 15); // 10 attempts per 15 minutes
+    if ($rateLimit->isLimited()) {
+        $logger->log("Rate limit exceeded for IP $ip");
+        Response::json(["error" => "Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau 15 phút"], 429);
+        exit;
+    }
+    
+    // Get input data and validate
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $loginType = $_POST['type'] ?? 'regular';  // 'regular' or 'parent'
+    $studentId = $_POST['student_id'] ?? '';   // Only used for parent login
+    
+    // Xác thực tùy theo loại đăng nhập
+    if ($loginType === 'parent') {
+        // Parent login with CCCD (username) and student_id
+        if (empty($username) || empty($studentId)) {
+            $rateLimit->increment();
+            Response::json(["error" => "Vui lòng nhập đầy đủ thông tin"], 400);
+            exit;
+        }
+
+        // Kiểm tra thông tin phụ huynh trong bảng students
+        $stmt = $conn->prepare("SELECT s.student_id, s.full_name, s.parent_cccd, s.parent_name 
+                                FROM students s 
+                                WHERE s.parent_cccd = ? AND s.student_id = ?");
+        if (!$stmt) {
+            $logger->log("Database error: " . $conn->error);
+            Response::json(["error" => "Lỗi cơ sở dữ liệu"], 500);
+            exit;
+        }
+        
+        $stmt->bind_param("ss", $username, $studentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            $logger->log("Failed parent login attempt: CCCD $username for student $studentId");
+            $rateLimit->increment();
+            Response::json(["error" => "Thông tin đăng nhập không chính xác"], 401);
+            exit;
+        }
+
+        $user = $result->fetch_assoc();
+        $stmt->close();
+        
+        // Thiết lập session cho phụ huynh
+        $_SESSION['user_id'] = "parent_" . $studentId;
+        $_SESSION['username'] = $user['parent_name'];
+        $_SESSION['role'] = 'parent';
+        $_SESSION['student_id'] = $studentId;
+        $_SESSION['student_name'] = $user['full_name'];
+        $_SESSION['parent_cccd'] = $username;
+        
+        $logger->log("Successful parent login: CCCD $username for student $studentId");
+        
+    } else {
+        // Regular login with username and password
+        if (empty($username) || empty($password)) {
+            $rateLimit->increment();
+            Response::json(["error" => "Vui lòng nhập đầy đủ thông tin"], 400);
+            exit;
+        }
+
+        // Khởi tạo đối tượng Auth và kiểm tra thông tin đăng nhập
+        $auth = new Auth($conn);
+        $user = $auth->login($username, $password);
+        
+        if (!$user) {
+            $rateLimit->increment();
+            $logger->log("Failed login attempt: username $username from IP $ip");
+            Response::json(["error" => "Thông tin đăng nhập không chính xác"], 401);
+            exit;
+        }
+    
+        // Thiết lập session
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        
+        if ($user['role'] === 'student') {
+            $_SESSION['student_id'] = $user['student_id'];
+        } elseif ($user['role'] === 'teacher') {
+            $_SESSION['teacher_id'] = $user['teacher_id'];
+        }
+    }
+
+    // Generate new CSRF token for the next request
+    $newCsrfToken = CSRF::generate();
+    
+    // Return success response with role for redirection
     Response::json([
-        "error" => "Too Many Requests",
-        "details" => "Account temporarily locked. Try again after 5 minutes."
-    ], 429);
+        "success" => true,
+        "role" => $_SESSION['role'],
+        "csrf_token" => $newCsrfToken
+    ]);
+    
+} else {
+    // Nếu không phải POST request, trả về lỗi
+    Response::json(["error" => "Method not allowed"], 405);
 }
-
-// Xử lý đăng nhập
-require_once __DIR__ . '/../config/config.php'; // $conn được định nghĩa trong config.php
-$auth = new Auth($conn);
-$user = $auth->login($username, $password);
-
-if (!$user) {
-    $attemptsRemaining = RateLimiter::increment($ip);
-    Response::json([
-        "error" => "Unauthorized",
-        "details" => "Invalid username or password",
-        "attempts_remaining" => $attemptsRemaining
-    ], 401);
-}
-
-// Đăng nhập thành công
-Session::setUser($user);
-CSRF::regenerate();
-RateLimiter::reset($ip);
-Logger::log("User {$user['username']} logged in successfully.");
-
-Response::json([
-    "message" => "Login successful",
-    "role" => $user['role'],
-    "redirect" => getDashboardUrl($user['role'])
-], 200);
+?>
