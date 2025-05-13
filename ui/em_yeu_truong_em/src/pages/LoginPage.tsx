@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const { login, isLoading } = useAuth();
+    const { login, isLoading, user } = useAuth();
     
     // State để lưu thông tin đăng nhập
     const [username, setUsername] = useState('');
@@ -44,8 +44,7 @@ const LoginPage = () => {
             const result = await login(username, password);
             
             if (result.success) {
-                // Lấy thông tin vai trò từ kết quả đăng nhập và chuyển hướng tương ứng
-                redirectBasedOnRole(result.role);
+                redirectBasedOnRole(user?.role);
             } else {
                 setError(result.message);
             }

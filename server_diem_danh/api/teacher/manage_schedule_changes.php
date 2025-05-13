@@ -1,10 +1,15 @@
 <?php
 // api/teacher/manage_schedule_changes.php
 require_once __DIR__ . '/../../modules/Session.php';
-require_once __DIR__ . '/../../modules/Response.php';
+
+require_once __DIR__ . '/../../modules/CORS.php';
 require_once __DIR__ . '/../../config/config.php';
 
 // Khởi động session
+// K�ch ho?t CORS
+CORS::enableCORS();
+
+// Kh?i d?ng session
 Session::start();
 
 // Kiểm tra quyền giáo viên

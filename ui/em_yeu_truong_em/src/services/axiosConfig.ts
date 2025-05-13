@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 // Cấu hình mặc định cho tất cả các request Axios
-axios.defaults.withCredentials = false;  // Không gửi cookie trong các request
+axios.defaults.withCredentials = true;  // Gửi cookie trong các request để duy trì phiên làm việc
+
+// Set common headers for all requests
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.common['Accept'] = 'application/json';
 
 // Interceptor xử lý trước khi gửi request
 axios.interceptors.request.use(

@@ -120,8 +120,28 @@ const Header = () => {
                     >
                         Lớp giảng dạy
                     </div>
+                )}                {user?.role === 'teacher' && (
+                    <>
+                        <div 
+                            className='text-black text-lg font-semibold hover:text-yellow-500 cursor-pointer ml-8'
+                            onClick={() => {
+                                navigate('/teacher/attendance')
+                            }}
+                        >
+                            Điểm danh
+                        </div>
+                        <div 
+                            className='text-black text-lg font-semibold hover:text-yellow-500 cursor-pointer ml-8'
+                            onClick={() => {
+                                navigate('/teacher/schedule')
+                            }}
+                        >
+                            Lịch dạy
+                        </div>
+                    </>
                 )}
-                {(user?.role === 'teacher' || user?.role === 'admin' || user?.role === 'manager') && (
+                
+                {(user?.role === 'admin' || user?.role === 'manager') && (
                     <div 
                         className='text-black text-lg font-semibold hover:text-yellow-500 cursor-pointer ml-8'
                         onClick={() => {

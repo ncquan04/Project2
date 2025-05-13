@@ -2,21 +2,34 @@
 // api/teacher/classes.php
 require_once __DIR__ . '/../../modules/Session.php';
 require_once __DIR__ . '/../../modules/Response.php';
+require_once __DIR__ . '/../../modules/CORS.php';
 require_once __DIR__ . '/../../config/config.php';
+
+// Kích hoạt CORS
+CORS::enableCORS();
 
 // Khởi động session
 Session::start();
 
+// Debug logs cho session
+$logFile = __DIR__ . '/../../logs/teacher_api_debug.log';
+file_put_contents($logFile, date('Y-m-d H:i:s') . " - API: classes.php\n", FILE_APPEND);
+file_put_contents($logFile, "Session ID: " . session_id() . "\n", FILE_APPEND);
+file_put_contents($logFile, "Session data: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
+
 // Kiểm tra quyền giáo viên
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher') {
+    file_put_contents($logFile, "Authorization failed: role not set or not teacher. Current role: " . ($_SESSION['role'] ?? 'none') . "\n", FILE_APPEND);
     Response::json(["success" => false, "error" => "Unauthorized. Teacher role required."], 403);
     exit;
 }
 
 // Lấy teacher_id từ session
 $teacher_id = $_SESSION['teacher_id'] ?? null;
+file_put_contents($logFile, "Teacher ID from session: " . ($teacher_id ?? 'none') . "\n", FILE_APPEND);
 
 if (!$teacher_id) {
+    file_put_contents($logFile, "Authorization failed: teacher_id not found in session\n", FILE_APPEND);
     Response::json(["success" => false, "error" => "Session does not contain teacher_id"], 401);
     exit;
 }

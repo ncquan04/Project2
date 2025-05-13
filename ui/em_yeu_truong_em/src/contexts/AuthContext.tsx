@@ -73,7 +73,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       if (response.success && response.user) {
         console.log('Setting user data in context:', JSON.stringify(response.user));
-        setUser(response.user);
+        // Đảm bảo role được lưu chính xác
+        const userData = {
+          ...response.user,
+          role: response.role || response.user.role // Đảm bảo role được lấy từ đúng vị trí
+        };
+        console.log('Enhanced user data with role:', JSON.stringify(userData));
+        setUser(userData);
         setIsAuthenticated(true);
         return { success: true, message: response.message };
       } else {

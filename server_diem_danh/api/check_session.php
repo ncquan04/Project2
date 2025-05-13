@@ -3,6 +3,10 @@
 require_once __DIR__ . '/../modules/Session.php';
 require_once __DIR__ . '/../modules/Response.php';
 require_once __DIR__ . '/../modules/CSRF.php';
+require_once __DIR__ . '/../modules/CORS.php';
+
+// Kích hoạt CORS
+CORS::enableCORS();
 
 // Start the session
 Session::start();

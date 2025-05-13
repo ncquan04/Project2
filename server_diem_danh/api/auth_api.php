@@ -6,6 +6,7 @@ require_once __DIR__ . '/../modules/RateLimiter.php';
 require_once __DIR__ . '/../modules/Logger.php';
 require_once __DIR__ . '/../modules/Auth.php';
 require_once __DIR__ . '/../modules/Session.php';
+require_once __DIR__ . '/../modules/CORS.php';
 
 // Ghi log cho debug
 $logFile = __DIR__ . '/../logs/auth_api_debug.log';
@@ -17,43 +18,41 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/../logs/error.log');
 
-// Lấy Origin từ request headers
-$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-file_put_contents($logFile, "Origin: $origin\n", FILE_APPEND);
+// Kích hoạt CORS
+CORS::enableCORS();
 
-// Danh sách các domain được phép truy cập
-$allowed_origins = [
-    'http://localhost:5173', // Vite dev server
-    'http://localhost:3000', // React dev server
-    'http://localhost', // Production build
-    'null', // Fallback cho file:// URLs
-    '', // Empty origin
-];
-
-// Kiểm tra nếu origin nằm trong danh sách được phép
-if (in_array($origin, $allowed_origins)) {
-    header("Access-Control-Allow-Origin: $origin");
-} else {
-    // Mặc định cho phép localhost:5173
-    header("Access-Control-Allow-Origin: http://localhost:5173");
+// Nếu là preflight request (OPTIONS), trả về 200 OK và dừng script
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    // Ghi log header trả về cho preflight request
+    $headers = headers_list();
+    file_put_contents($logFile, "[OPTIONS] Response headers: " . print_r($headers, true) . "\n", FILE_APPEND);
+    http_response_code(200);
+    exit();
 }
 
-// Cấu hình CORS đầy đủ
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Max-Age: 3600"); // Cache preflight request trong 1 giờ
+// Log request details
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+$requestMethod = $_SERVER['REQUEST_METHOD'];
+$contentType = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+$cookies = isset($_SERVER['HTTP_COOKIE']) ? $_SERVER['HTTP_COOKIE'] : '';
+
+file_put_contents($logFile, "Request details:\n", FILE_APPEND);
+file_put_contents($logFile, "Origin: $origin\n", FILE_APPEND);
+file_put_contents($logFile, "Method: $requestMethod\n", FILE_APPEND);
+file_put_contents($logFile, "Content-Type: $contentType\n", FILE_APPEND);
+file_put_contents($logFile, "Cookies: $cookies\n", FILE_APPEND);
 
 // Thiết lập security headers
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
 
-// Xử lý preflight request OPTIONS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
+// Ghi log toàn bộ header trả về (debug CORS)
+ob_start();
+register_shutdown_function(function() use ($logFile) {
+    $headers = headers_list();
+    file_put_contents($logFile, "Response headers: " . print_r($headers, true) . "\n", FILE_APPEND);
+});
 
 // Lấy hành động từ tham số
 $action = $_GET['action'] ?? '';
@@ -117,18 +116,25 @@ switch ($action) {
             ], 401);
             exit;
         }
-        
-        // Đăng nhập thành công - KHÔNG dùng session
+          // Đăng nhập thành công - Khởi tạo phiên (session)
         file_put_contents($logFile, "Login successful for username: $username\n", FILE_APPEND);
         RateLimiter::reset($ip);
         Logger::log("Người dùng {$user['username']} đăng nhập thành công");
+        
+        // Khởi tạo session cho phiên làm việc
+        Session::start();
+        Session::setUser($user);
+        
+        file_put_contents($logFile, "Session started, ID: " . session_id() . "\n", FILE_APPEND);
+        file_put_contents($logFile, "Session data: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
         
         // Trả về thông tin người dùng
         $userData = [
             'user_id' => $user['user_id'],
             'username' => $user['username'],
             'role' => $user['role'],
-            'student_id' => $user['student_id'] ?? null
+            'student_id' => $user['student_id'] ?? null,
+            'teacher_id' => $user['teacher_id'] ?? null
         ];
         
         Response::json([
@@ -139,9 +145,17 @@ switch ($action) {
             "user" => $userData
         ]);
         break;
+          case 'logout':
+        // Xử lý đăng xuất
+        Session::start();
         
-    case 'logout':
-        // Xử lý đăng xuất - không cần session
+        // Ghi log trước khi hủy session
+        file_put_contents($logFile, "Logout request - Session before destroy: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
+        
+        // Hủy session
+        Session::destroy();
+        
+        // Trả về kết quả
         Response::json(["success" => true, "message" => "Đăng xuất thành công"]);
         break;
     

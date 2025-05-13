@@ -84,7 +84,7 @@ const AttendanceHistory: React.FC = () => {
     <div className="container mx-auto px-4 py-6">
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <h1 className="text-2xl font-semibold mb-2 md:mb-0">Lịch sử điểm danh</h1>
+          <h1 className="text-2xl font-semibold mb-2 md:mb-0 text-black">Lịch sử điểm danh</h1>
           
           <div className="flex space-x-2">
             <select 
@@ -92,10 +92,10 @@ const AttendanceHistory: React.FC = () => {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
-              <option value="all">Tất cả</option>
-              <option value="present">Có mặt</option>
-              <option value="absent">Vắng mặt</option>
-              <option value="late">Đi trễ</option>
+              <option className='text-black' value="all">Tất cả</option>
+              <option className='text-black' value="present">Có mặt</option>
+              <option className='text-black' value="absent">Vắng mặt</option>
+              <option className='text-black' value="late">Đi trễ</option>
             </select>
             
             <button 

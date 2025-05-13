@@ -297,3 +297,176 @@
 [2025-04-27 05:26:05] Người dùng sv001 đăng nhập thành công
 [2025-04-27 05:28:02] Người dùng admin đăng nhập thành công
 [2025-04-27 05:28:14] Người dùng sv001 đăng nhập thành công
+[2025-05-09 08:02:32] Login failed for username: admin - Password mismatch
+[2025-05-09 08:02:49] Login failed for username: admin - Password mismatch
+[2025-05-09 08:07:28] Người dùng admin đăng nhập thành công
+[2025-05-09 08:07:36] Người dùng sv001 đăng nhập thành công
+[2025-05-09 08:25:41] Người dùng vananh đăng nhập thành công
+[2025-05-09 09:07:38] Người dùng sv001 đăng nhập thành công
+[2025-05-09 09:07:54] Người dùng sv001 đăng nhập thành công
+[2025-05-09 09:16:49] Người dùng sv001 đăng nhập thành công
+[2025-05-09 09:30:44] Người dùng sv001 đăng nhập thành công
+[2025-05-09 09:34:12] Người dùng vananh đăng nhập thành công
+[2025-05-09 09:36:51] Người dùng sv001 đăng nhập thành công
+[2025-05-09 09:37:04] Người dùng vananh đăng nhập thành công
+[2025-05-09 09:40:05] Người dùng sv001 đăng nhập thành công
+[2025-05-09 17:16:57] Người dùng vananh đăng nhập thành công
+[2025-05-09 18:14:18] Người dùng vananh đăng nhập thành công
+[2025-05-09 18:14:26] Người dùng vananh đăng nhập thành công
+[2025-05-09 18:34:34] Người dùng vananh đăng nhập thành công
+[09-May-2025 18:55:13 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-09 18:55:13] Login failed for username: test - User not found
+[09-May-2025 18:55:33 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[09-May-2025 18:58:28 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-09 18:58:28] Người dùng vananh đăng nhập thành công
+[09-May-2025 18:58:28 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-May-2025 18:58:28 Europe/Berlin] Session started: 9itk8ho7r7kos00g97o82qib4v, Role: none
+[09-May-2025 19:00:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[09-May-2025 19:00:46 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-May-2025 19:00:46 Europe/Berlin] Session started: ak3n28pkctmmlivipa2bogpt3s, Role: teacher
+[10-May-2025 14:14:08 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=OPTIONS
+[10-May-2025 14:14:08 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 14:14:08] Người dùng vananh đăng nhập thành công
+[10-May-2025 14:14:08 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 14:14:08 Europe/Berlin] Session started: elp5hi1krpsttj899b5nge9frs, Role: none
+[10-May-2025 14:31:30 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:31:30 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:31:35 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 14:31:35] Người dùng vananh đăng nhập thành công
+[10-May-2025 14:31:35 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 14:31:35 Europe/Berlin] Session started: 86te8e1h496mavrigv7deojgjo, Role: teacher
+[10-May-2025 14:34:08 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:34:08 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:35:20 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 14:35:20] Người dùng vananh đăng nhập thành công
+[10-May-2025 14:35:20 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 14:35:20 Europe/Berlin] Session started: iick521na6gndl3jkcfhr6mi5i, Role: teacher
+[10-May-2025 14:36:25 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:36:25 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:36:32 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 14:36:32] Người dùng vananh đăng nhập thành công
+[10-May-2025 14:36:32 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 14:36:32 Europe/Berlin] Session started: f0srpju5emer45fq72ftngkr0t, Role: teacher
+[10-May-2025 14:42:12 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:42:12 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 14:42:18 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 14:42:18] Người dùng vananh đăng nhập thành công
+[10-May-2025 14:42:18 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 14:42:18 Europe/Berlin] Session started: 4ipfh385qr4p819ot2nr8dkrb7, Role: teacher
+[10-May-2025 15:00:57 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 15:00:57 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 15:01:03 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 15:01:03] Người dùng vananh đăng nhập thành công
+[10-May-2025 15:01:03 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 15:01:03 Europe/Berlin] Session started: sv78fehean56olicvcikcj4q82, Role: teacher
+[10-May-2025 15:14:26 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:14:26 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Origin: 
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Credentials: true
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+[10-May-2025 15:14:26 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:14:26 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Origin: 
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Credentials: true
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+[10-May-2025 15:14:26 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:14:26 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Origin: 
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Credentials: true
+[10-May-2025 15:14:26 Europe/Berlin] CORS Headers Set: Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+[10-May-2025 15:17:38 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 15:17:38 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET
+[10-May-2025 15:17:49 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=OPTIONS
+[10-May-2025 15:17:49 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST
+[2025-05-10 15:17:49] Người dùng vananh đăng nhập thành công
+[10-May-2025 15:17:49 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 15:17:49 Europe/Berlin] Session started: gco8tvkrab68d6s0rqmgbp6glc, Role: teacher
+[10-May-2025 15:46:50 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:46:50 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:46:50 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:46:50 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:46:50 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:46:50 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:55:05 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:55:05 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:55:05 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:55:05 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:55:05 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:55:05 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:56:03 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:56:03 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:56:03 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST, URI=/server_diem_danh/api/auth_api.php?action=login
+[2025-05-10 15:56:03] Người dùng vananh đăng nhập thành công
+[10-May-2025 15:56:03 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 15:56:03 Europe/Berlin] Session started: 2k954k8t7a1mt3j879g2k65ed5, Role: teacher
+[10-May-2025 15:58:43 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:58:43 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:58:43 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:58:43 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:58:43 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:58:43 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:58:46 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:58:46 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:58:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:58:46 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:58:46 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:58:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[10-May-2025 15:58:52 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[10-May-2025 15:58:52 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[10-May-2025 15:58:52 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=POST, URI=/server_diem_danh/api/auth_api.php?action=login
+[2025-05-10 15:58:52] Người dùng vananh đăng nhập thành công
+[10-May-2025 15:58:52 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[10-May-2025 15:58:52 Europe/Berlin] Session started: o6pn79dmem60mq4re97i2jarkf, Role: teacher
+[11-May-2025 18:20:52 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[11-May-2025 18:20:52 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[11-May-2025 18:20:52 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[11-May-2025 18:21:46 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[11-May-2025 18:21:46 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[11-May-2025 18:21:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[11-May-2025 18:21:46 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[11-May-2025 18:21:46 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[11-May-2025 18:21:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[12-May-2025 17:53:46 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[12-May-2025 17:53:46 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[12-May-2025 17:53:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[12-May-2025 17:53:46 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[12-May-2025 17:53:46 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[12-May-2025 17:53:46 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[12-May-2025 18:25:29 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[12-May-2025 18:25:29 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[12-May-2025 18:25:29 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[12-May-2025 18:25:29 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[12-May-2025 18:25:29 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[12-May-2025 18:25:29 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[13-May-2025 03:47:48 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[13-May-2025 03:47:48 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[13-May-2025 03:47:48 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[13-May-2025 03:47:48 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[13-May-2025 03:47:48 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[13-May-2025 03:47:48 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[13-May-2025 03:47:49 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[13-May-2025 03:47:49 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[13-May-2025 03:47:49 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[13-May-2025 03:47:49 Europe/Berlin] CORS Request Origin: http://localhost:5173
+[13-May-2025 03:47:49 Europe/Berlin] CORS: Development mode - Allowing origin: http://localhost:5173
+[13-May-2025 03:47:49 Europe/Berlin] CORS Request: Origin=http://localhost:5173, Method=GET, URI=/server_diem_danh/api/auth_api.php?action=check_auth
+[2025-05-13 05:23:58] Người dùng admin đăng nhập thành công
+[13-May-2025 05:23:58 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 05:23:58 Europe/Berlin] Session started: mvo9e622cgv1cb1d8gqkmn4p8o, Role: none
+[13-May-2025 05:24:05 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 05:24:05 Europe/Berlin] Session started: f8mhfhrhk8h6v70ouoaf4v4j9p, Role: admin
+[2025-05-13 05:24:34] Người dùng vananh đăng nhập thành công
+[13-May-2025 05:24:34 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 05:24:34 Europe/Berlin] Session started: dhrfpnopg4fps775bhm977c9n4, Role: none
+[2025-05-13 18:07:45] Người dùng vananh đăng nhập thành công
+[13-May-2025 18:07:45 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 18:07:45 Europe/Berlin] Session started: gj98f7j6rlm6codtsj7di4ve8a, Role: none
+[2025-05-13 18:25:02] Người dùng vananh đăng nhập thành công
+[13-May-2025 18:25:02 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 18:25:02 Europe/Berlin] Session started: gece4i0cb4f08mh73qroa4r29a, Role: teacher
+[2025-05-13 18:25:36] Người dùng vananh đăng nhập thành công
+[13-May-2025 18:25:36 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 18:25:36 Europe/Berlin] Session started: 45p8qe838cfpl095i51drlkvm0, Role: teacher
+[2025-05-13 18:27:06] Người dùng vananh đăng nhập thành công
+[13-May-2025 18:27:06 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[13-May-2025 18:27:06 Europe/Berlin] Session started: g3r6q3r5iac2vsuteibo6o0q7k, Role: teacher

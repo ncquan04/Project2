@@ -2,9 +2,16 @@
 // api/teacher/class_students.php
 require_once __DIR__ . '/../../modules/Session.php';
 require_once __DIR__ . '/../../modules/Response.php';
+require_once __DIR__ . '/../../modules/CORS.php';
 require_once __DIR__ . '/../../config/config.php';
 
+// Kích hoạt CORS
+CORS::enableCORS();
+
 // Khởi động session
+Session::start();
+
+// Kh?i d?ng session
 Session::start();
 
 // Kiểm tra quyền giáo viên

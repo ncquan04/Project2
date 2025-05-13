@@ -1,0 +1,29 @@
+# Enable CORS for all domains during development
+<IfModule mod_headers.c>
+    # Enable CORS for specific domain
+    Header set Access-Control-Allow-Origin "http://localhost:5173"
+    
+    # Or for any domain (use in development only)
+    # Header set Access-Control-Allow-Origin "*"
+    
+    # Allow credentials
+    Header set Access-Control-Allow-Credentials "true"
+    
+    # Allow methods
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    
+    # Allow headers
+    Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
+    
+    # Set cache time
+    Header set Access-Control-Max-Age "3600"
+    
+    # Handle OPTIONS method (no redirect, just return 200 OK with headers)
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [L]
+</IfModule>
+
+# Ensure PHP errors are displayed during development
+php_flag display_errors on
+php_value error_reporting 32767

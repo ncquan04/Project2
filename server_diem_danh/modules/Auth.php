@@ -7,14 +7,13 @@ class Auth {
 
     public function __construct($dbConnection) {
         $this->conn = $dbConnection;
-    }
-
-    public function login($username, $password) {
+    }    public function login($username, $password) {
         // Debug log
         $logFile = __DIR__ . '/../logs/auth_debug.log';
         file_put_contents($logFile, date('Y-m-d H:i:s') . " - Login attempt for: $username\n", FILE_APPEND);
         
-        $stmt = $this->conn->prepare("SELECT user_id, username, password, role, student_id FROM users WHERE username = ?");
+        // Lấy thông tin cơ bản của người dùng, bao gồm cả teacher_id
+        $stmt = $this->conn->prepare("SELECT user_id, username, password, role, student_id, teacher_id FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
