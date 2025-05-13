@@ -49,7 +49,7 @@ const TeacherClassDetailPage = () => {
           id: index + 1,
           student_id: student.student_id,
           full_name: student.full_name,
-          student_class: student.class || '',
+          student_class: student.student_class || '',
           rfid_uid: student.rfid_uid || '',
           date: today.toISOString().split('T')[0],
           status: Math.random() > 0.2 
