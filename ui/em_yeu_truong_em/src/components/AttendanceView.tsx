@@ -3,18 +3,20 @@ import { AttendanceRecord } from '../services/teacherService';
 
 interface AttendanceViewProps {
   attendance: AttendanceRecord[];
-  onUpdateAttendance?: (recordId: number, status: 'present' | 'absent' | 'late') => Promise<void>;
+  students: any[];
+  onUpdateAttendance?: (record: AttendanceRecord, status: 'present' | 'absent' | 'late') => Promise<void>;
   date: string;
   isEditable?: boolean;
 }
 
 const AttendanceView = ({ 
   attendance, 
+  students,
   onUpdateAttendance,
   date,
   isEditable = true
 }: AttendanceViewProps) => {
-  const [editingRecord, setEditingRecord] = useState<number | null>(null);
+  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
   const [editStatus, setEditStatus] = useState<'present' | 'absent' | 'late'>('present');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -44,19 +46,34 @@ const AttendanceView = ({
     }
   };
 
-  const handleSaveStatus = async (recordId: number) => {
-    if (!onUpdateAttendance) return;
-    
-    setLoading(true);
-    try {
-      await onUpdateAttendance(recordId, editStatus);
-      setEditingRecord(null);
-    } catch (err) {
-      console.error('Error updating attendance:', err);
-    } finally {
-      setLoading(false);
+  // Merge students and attendance
+  const mergedList = students.map((student) => {
+    const studentId = student.student_id || student.studentId;
+    // Tìm attendance đúng cho student_id này
+    const att = attendance.find(a =>
+      (a.student_id || a.studentId) === studentId
+    );
+    let attendance_id = 0;
+    let status: 'present' | 'absent' | 'late' = 'absent';
+    let time: string | undefined = undefined;
+    if (att && att.attendance) {
+      attendance_id = att.attendance.attendance_id ?? 0;
+      status = att.attendance.status ?? 'absent';
+      if (att.attendance.check_in_time) {
+        time = new Date(att.attendance.check_in_time).toLocaleTimeString('vi-VN');
+      }
     }
-  };
+    return {
+      ...student,
+      ...att,
+      student_id: studentId,
+      full_name: student.full_name || student.name,
+      rfid_uid: student.rfid_uid || student.rfid || (att ? att.rfid_uid : ''),
+      attendance_id,
+      status,
+      time,
+    };
+  });
 
   if (attendance.length === 0) {
     return (
@@ -91,16 +108,16 @@ const AttendanceView = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {attendance.map((record, index) => {
-              const recordId = record.id ?? index;
-              const status: 'present' | 'absent' | 'late' = (record.status ?? record.attendance?.status ?? 'absent') as 'present' | 'absent' | 'late';
+            {mergedList.map((record, index) => {
+              const studentId = record.student_id;
+              const status: 'present' | 'absent' | 'late' = record.status;
               return (
-                <tr key={recordId} className="hover:bg-gray-50">
+                <tr key={studentId} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{record.student_id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.full_name}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {editingRecord === recordId ? (
+                    {editingStudentId === studentId ? (
                       <select
                         value={editStatus}
                         onChange={(e) => setEditStatus(e.target.value as 'present' | 'absent' | 'late')}
@@ -117,21 +134,32 @@ const AttendanceView = ({
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {record.time ?? (record.attendance?.check_in_time ? new Date(record.attendance.check_in_time).toLocaleTimeString('vi-VN') : '-')}
+                    {record.time ?? '-'}
                   </td>
                   {isEditable && onUpdateAttendance && (
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      {editingRecord === recordId ? (
+                      {editingStudentId === studentId ? (
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => handleSaveStatus(recordId)}
+                            onClick={async () => {
+                              setLoading(true);
+                              try {
+                                console.log('[AttendanceView] onUpdateAttendance called with:', record, editStatus);
+                                await onUpdateAttendance(record, editStatus);
+                                setEditingStudentId(null);
+                              } catch (err) {
+                                console.error('Error updating attendance:', err);
+                              } finally {
+                                setLoading(false);
+                              }
+                            }}
                             disabled={loading}
                             className="text-green-600 hover:text-green-900 disabled:opacity-50"
                           >
                             {loading ? 'Đang lưu...' : 'Lưu'}
                           </button>
                           <button
-                            onClick={() => setEditingRecord(null)}
+                            onClick={() => setEditingStudentId(null)}
                             disabled={loading}
                             className="text-gray-600 hover:text-gray-900 disabled:opacity-50"
                           >
@@ -141,7 +169,7 @@ const AttendanceView = ({
                       ) : (
                         <button
                           onClick={() => {
-                            setEditingRecord(recordId);
+                            setEditingStudentId(studentId);
                             setEditStatus(status);
                           }}
                           className="text-blue-600 hover:text-blue-900"

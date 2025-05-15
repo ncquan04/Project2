@@ -10,11 +10,16 @@ export interface ClassInfo {
   subject: string;
   schedule: string;
   room: string;
+  semester?: string;
+  startDate?: string;
+  endDate?: string;
+  start_time?: string; // thêm trường này
+  end_time?: string;   // thêm trường này
 }
 
 // Mock data for offline development
 const MOCK_DATA = {
-  USE_MOCK: true, // Đặt thành false khi API hoạt động
+  USE_MOCK: false, // Đặt thành false khi API hoạt động
   classes: [
     {
       id: 1,
@@ -139,6 +144,7 @@ export interface AttendanceRecord {
   student_class: string;
   rfid_uid: string | null;
   attendance?: {
+    attendance_id?: number | null; // thêm dòng này để đồng bộ với backend
     status: 'present' | 'absent' | 'late';
     check_in_time: string | null;
     notes: string | null;
@@ -180,9 +186,9 @@ export class TeacherService {
     }
     
     // Sử dụng API thực tế khi đã sẵn sàng
-    try {
-      const response = await axios.get(`${API_BASE_URL}/teacher/classes.php`);
-      return response.data;
+    try {      const response = await axios.get(`${API_BASE_URL}/teacher/classes.php`);
+      return response.data?.classes || [];
+
     } catch (error) {
       console.error('Failed to fetch teacher classes:', error);
       throw error;
@@ -193,30 +199,36 @@ export class TeacherService {
    * Get all students enrolled in a specific class
    * @param classId - The ID of the class
    */  async getClassStudents(classId: number): Promise<Student[]> {
-    // Sử dụng mock data khi API chưa sẵn sàng hoặc đang phát triển
     if (MOCK_DATA.USE_MOCK) {
-      console.log('Using mock data for class students');
-      return new Promise(resolve => {
-        setTimeout(() => resolve(MOCK_DATA.students.map(s => ({
-          student_id: s.studentId,
-          full_name: s.name,
-          student_class: 'Lớp ' + Math.floor(Math.random() * 10),
-          rfid_uid: s.rfid
-        }))), 300);
-      });
+      // ...existing code...
     }
-    
     try {
       const response = await axios.get(`${API_BASE_URL}/teacher/class_students.php`, {
         params: { class_id: classId }
       });
-      // Đảm bảo luôn trả về một mảng, ngay cả khi response.data.students là undefined
-      return response.data?.students || [];
+      let data = response.data;
+      // Nếu backend trả về chuỗi chứa warning + JSON, cố gắng tách JSON
+      if (typeof data === 'string') {
+        const jsonStart = data.indexOf('{');
+        const jsonEnd = data.lastIndexOf('}');
+        if (jsonStart !== -1 && jsonEnd !== -1) {
+          try {
+            data = JSON.parse(data.substring(jsonStart, jsonEnd + 1));
+          } catch (e) {
+            console.error('Lỗi parse JSON từ response:', e, data);
+            return [];
+          }
+        } else {
+          return [];
+        }
+      }
+      return data?.students || [];
     } catch (error) {
       console.error(`Failed to fetch students for class ${classId}:`, error);
       throw error;
     }
   }
+
   /**
    * Get the teaching schedule for a specific class
    * @param classId - The ID of the class
@@ -314,19 +326,35 @@ export class TeacherService {
   }
 
   /**
-   * Update attendance record for a student
-   * @param attendanceId - The ID of the attendance record
-   * @param status - The new attendance status
+   * Update or create attendance record for a student
+   * @param params - Full record for both update and create
    */
-  async updateAttendance(attendanceId: number, status: 'present' | 'absent' | 'late'): Promise<boolean> {
+  async updateAttendance(
+    params: {
+      attendanceId?: number;
+      student_id: string;
+      status: 'present' | 'absent' | 'late';
+      room: string;
+      course_id: number;
+      checkin_time: string;
+      rfid_uid?: string | null;
+    }
+  ): Promise<boolean> {
     try {
-      const response = await axios.post(`${API_BASE_URL}/teacher/update_attendance.php`, {
-        attendanceId,
-        status
-      });
+      // Always send the full payload for both update and create
+      const payload = {
+        attendanceId: params.attendanceId ?? 0,
+        student_id: params.student_id,
+        status: params.status,
+        room: params.room,
+        course_id: params.course_id,
+        checkin_time: params.checkin_time,
+        rfid_uid: params.rfid_uid ?? null,
+      };
+      const response = await axios.post(`${API_BASE_URL}/teacher/update_attendance.php`, payload);
       return response.data.success;
     } catch (error) {
-      console.error(`Failed to update attendance record ${attendanceId}:`, error);
+      console.error('Failed to update/create attendance record:', error);
       throw error;
     }
   }

@@ -97,6 +97,7 @@ CREATE TABLE attendance (
     room VARCHAR(10) NOT NULL,
     course_id INT NULL,
     verified BOOLEAN DEFAULT FALSE, -- Xác nhận điểm danh bởi giáo viên
+    status ENUM('present', 'absent', 'late') DEFAULT 'present',
     notes TEXT,
     FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE SET NULL

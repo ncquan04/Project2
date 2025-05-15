@@ -253,55 +253,91 @@ VALUES
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV001', 1, 15, 14, NOW()),
-('SV002', 1, 15, 12, NOW());
+('SV002', 1, 15, 12, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC301.01
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV001', 3, 15, 15, NOW()),
-('SV002', 3, 15, 11, NOW());
+('SV002', 3, 15, 11, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC501.01
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV001', 5, 15, 14, NOW()),
-('SV002', 5, 15, 13, NOW());
+('SV002', 5, 15, 13, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC201.01
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV003', 2, 15, 15, NOW()),
-('SV004', 2, 15, 12, NOW());
+('SV004', 2, 15, 12, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC401.01
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV003', 4, 15, 13, NOW()),
-('SV004', 4, 15, 11, NOW());
+('SV004', 4, 15, 11, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC102.01
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV003', 6, 15, 15, NOW()),
-('SV004', 6, 15, 14, NOW());
+('SV004', 6, 15, 14, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC202.01
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV005', 7, 15, 13, NOW()),
-('SV006', 7, 15, 12, NOW());
+('SV006', 7, 15, 12, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC101.02
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV007', 11, 15, 15, NOW()),
-('SV008', 11, 15, 11, NOW());
+('SV008', 11, 15, 11, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Lớp CSC301.02
 INSERT INTO attendance_statistics (student_id, class_id, total_sessions, attended_sessions, last_updated)
 VALUES
 ('SV007', 13, 15, 14, NOW()),
-('SV008', 13, 15, 14, NOW());
+('SV008', 13, 15, 14, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Cập nhật course_id trong bảng attendance dựa trên thông tin lớp học
 UPDATE attendance a
@@ -341,7 +377,11 @@ VALUES
 ('SV012', 1, 15, 12, NOW()),
 ('SV013', 1, 15, 10, NOW()),
 ('SV014', 1, 15, 8, NOW()),
-('SV015', 1, 15, 15, NOW());
+('SV015', 1, 15, 15, NOW())
+ON DUPLICATE KEY UPDATE
+  total_sessions = VALUES(total_sessions),
+  attended_sessions = VALUES(attended_sessions),
+  last_updated = VALUES(last_updated);
 
 -- Thêm nhiều dữ liệu điểm danh hơn cho các lớp khác
 -- Điểm danh cho lớp CSC501.01 (Thứ 6, phòng P501)

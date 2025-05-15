@@ -13,7 +13,16 @@ const TeacherClassesPage = () => {
       try {
         setLoading(true);
         const data = await teacherService.getTeacherClasses();
-        setClasses(data);
+        const mapped = data.map((item: any) => ({
+          id: item.class_id ?? item.id,
+          name: item.class_code ?? item.name,
+          subject: item.course_name ?? item.subject,
+          schedule: item.schedule_day && item.start_time && item.end_time
+            ? `${item.schedule_day} (${item.start_time} - ${item.end_time})`
+            : item.schedule,
+          room: item.room,
+        }));
+        setClasses(mapped);
       } catch (err) {
         setError('Không thể tải danh sách lớp học. Vui lòng thử lại sau.');
         console.error('Error fetching classes:', err);

@@ -27,17 +27,11 @@ const TeacherClassSchedulePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!classId) return;
-      
       try {
         setLoading(true);
         const classData = await teacherService.getClassSchedule(Number(classId));
         setClassInfo(classData);
-        
-        // In a real implementation, you would fetch schedule changes here
-        // Since the API isn't fully implemented yet, we'll use empty array
         setScheduleChanges([]);
-        
-        // Update form default room
         setFormData(prev => ({
           ...prev,
           originalRoom: classData.room
@@ -49,7 +43,6 @@ const TeacherClassSchedulePage = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [classId]);
 

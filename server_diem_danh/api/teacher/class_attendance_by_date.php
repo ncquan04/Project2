@@ -74,10 +74,11 @@ try {
     
     $classInfo = $checkResult->fetch_assoc();
     
-    // Lấy danh sách sinh viên trong lớp
-    $studentsStmt = $conn->prepare("SELECT s.student_id, s.full_name, s.student_class, s.rfid_uid 
+    // Lấy danh sách sinh viên trong lớp, đồng thời lấy tên lớp từ bảng classes
+    $studentsStmt = $conn->prepare("SELECT s.student_id, s.full_name, cl.class_code AS student_class, s.rfid_uid 
                                    FROM students s 
                                    JOIN student_classes sc ON s.student_id = sc.student_id 
+                                   JOIN classes cl ON sc.class_id = cl.class_id
                                    WHERE sc.class_id = ? 
                                    ORDER BY s.student_id");
     $studentsStmt->bind_param("i", $class_id);
@@ -90,44 +91,39 @@ try {
     }
     
     // Lấy dữ liệu điểm danh cho ngày được chọn
-    $attendanceQuery = "SELECT a.student_id, a.checkin_time, a.notes, a.verified
+    // Xác định khoảng thời gian hợp lệ cho buổi học (ví dụ: từ 1 tiếng trước đến 3 tiếng sau giờ bắt đầu)
+    $classStartTime = $date . ' ' . $classInfo['start_time'];
+    $startWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' -1 hour'));
+    $endWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' +3 hour'));
+
+    // Sửa: lấy cả attendance_id và sắp xếp checkin_time DESC để lấy bản ghi mới nhất trước
+    $attendanceQuery = "SELECT a.attendance_id, a.student_id, a.checkin_time, a.notes, a.verified, a.status
                        FROM attendance a
-                       JOIN classes cl ON a.course_id = cl.course_id
-                       WHERE cl.class_id = ? AND DATE(a.checkin_time) = ?
-                       ORDER BY a.checkin_time ASC, a.student_id ASC";
-    
+                       WHERE a.room = ?
+                         AND a.course_id = ?
+                         AND a.checkin_time >= ?
+                         AND a.checkin_time <= ?
+                       ORDER BY a.student_id ASC, a.checkin_time DESC";
     $attendanceStmt = $conn->prepare($attendanceQuery);
-    $attendanceStmt->bind_param("is", $class_id, $date);
+    $attendanceStmt->bind_param("ssss", $classInfo['room'], $classInfo['course_id'], $startWindow, $endWindow);
     $attendanceStmt->execute();
     $attendanceResult = $attendanceStmt->get_result();
-    
-    // Tổ chức dữ liệu điểm danh theo cấu trúc dễ sử dụng
+
+    // Tổ chức dữ liệu điểm danh: lấy bản ghi mới nhất cho mỗi student_id
     $attendanceData = [];
-    
     while ($attendance = $attendanceResult->fetch_assoc()) {
         $studentId = $attendance['student_id'];
-        
-        // Xác định trạng thái điểm danh (present/late/absent) dựa vào thời gian
-        $status = 'present';
-        $checkInTime = new DateTime($attendance['checkin_time']);
-        $classStartTime = new DateTime($date . ' ' . $classInfo['start_time']);
-        
-        // Nếu điểm danh muộn 15 phút hoặc hơn, đánh dấu là late
-        $lateThreshold = clone $classStartTime;
-        $lateThreshold->add(new DateInterval('PT15M'));
-        
-        if ($checkInTime > $lateThreshold) {
-            $status = 'late';
+        if (!isset($attendanceData[$studentId])) {
+            $attendanceData[$studentId] = [
+                'attendance_id' => $attendance['attendance_id'],
+                'status' => $attendance['status'] ?? 'present',
+                'check_in_time' => $attendance['checkin_time'],
+                'notes' => $attendance['notes'],
+                'verified' => $attendance['verified']
+            ];
         }
-        
-        $attendanceData[$studentId] = [
-            'status' => $status,
-            'check_in_time' => $attendance['checkin_time'],
-            'notes' => $attendance['notes'],
-            'verified' => $attendance['verified']
-        ];
     }
-    
+
     // Thêm thông tin điểm danh vào danh sách sinh viên
     foreach ($students as &$student) {
         $studentId = $student['student_id'];
@@ -135,6 +131,7 @@ try {
             $student['attendance'] = $attendanceData[$studentId];
         } else {
             $student['attendance'] = [
+                'attendance_id' => null,
                 'status' => 'absent',
                 'check_in_time' => null,
                 'notes' => null,

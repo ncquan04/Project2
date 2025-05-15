@@ -4,40 +4,146 @@ import teacherService, { AttendanceRecord, ClassInfo } from '../services/teacher
 import Header from '../components/Header';
 import AttendanceView from '../components/AttendanceView';
 
+function getWeekdayNumber(weekday: string): number {
+  // Chuyển tên thứ tiếng Anh sang số (0: Chủ nhật, 1: Thứ 2, ...)
+  const map: Record<string, number> = {
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+  };
+  return map[weekday?.toLowerCase?.()] ?? 0;
+}
+
+// Extend ClassInfo to allow startDate, endDate, schedule_day
+interface ClassInfoWithSchedule extends ClassInfo {
+  startDate?: string;
+  endDate?: string;
+  schedule_day?: string;
+}
+
+const getStartTimeFromSchedule = (schedule: string): string => {
+  // schedule: 'Thứ Hai (07:30 - 09:30)' => return '07:30:00'
+  const match = schedule.match(/\((\d{1,2}:\d{2})/);
+  if (match && match[1]) {
+    return match[1] + ':00';
+  }
+  return '07:30:00';
+};
+
 const TeacherClassAttendancePage = () => {
   const { classId } = useParams<{ classId: string }>();
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
-  const [classInfo, setClassInfo] = useState<ClassInfo | null>(null);
+  const [classInfo, setClassInfo] = useState<ClassInfoWithSchedule | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );  // No need for editing state as it's handled by AttendanceView component
+  const [validDates, setValidDates] = useState<string[]>([]); // Danh sách ngày học hợp lệ
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [students, setStudents] = useState<any[]>([]);
+
+  // Tạo danh sách ngày học hợp lệ dựa trên lịch học
+  function generateValidDates(startDate: string, endDate: string, weekday: string) {
+    const result: string[] = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const weekdayNum = getWeekdayNumber(weekday);
+    // Tìm ngày đầu tiên đúng thứ
+    let current = new Date(start);
+    current.setHours(0,0,0,0);
+    while (current.getDay() !== weekdayNum) {
+      current.setDate(current.getDate() + 1);
+    }
+    // Lặp qua từng tuần cho đến hết
+    while (current <= end) {
+      result.push(current.toISOString().split('T')[0]);
+      current.setDate(current.getDate() + 7);
+    }
+    return result;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       if (!classId) return;
-      
       try {
         setLoading(true);
-        const [attendanceData, classData] = await Promise.all([
-          teacherService.getClassAttendanceByDate(Number(classId), selectedDate),
-          teacherService.getClassSchedule(Number(classId))
-        ]);
-        
-        setAttendance(attendanceData);
+        const classData = await teacherService.getClassSchedule(Number(classId));
         setClassInfo(classData);
+        // Sinh danh sách ngày học hợp lệ
+        const classDataWithSchedule = classData as ClassInfoWithSchedule;
+        if (classDataWithSchedule?.startDate && classDataWithSchedule?.endDate && classDataWithSchedule?.schedule) {
+          let weekday = '';
+          if (classDataWithSchedule.schedule.includes('Thứ')) {
+            // Lấy từ đầu chuỗi
+            weekday = classDataWithSchedule.schedule.split(' ')[0].toLowerCase();
+            // Chuyển sang tiếng Anh cho hàm getWeekdayNumber
+            const vi2en: Record<string, string> = {
+              'thứ hai': 'monday',
+              'thứ ba': 'tuesday',
+              'thứ tư': 'wednesday',
+              'thứ năm': 'thursday',
+              'thứ sáu': 'friday',
+              'thứ bảy': 'saturday',
+              'chủ nhật': 'sunday',
+            };
+            // Xử lý trường hợp "thứ hai", "thứ ba"...
+            let weekdayKey = weekday;
+            if (weekday === 'thứ' && classDataWithSchedule.schedule.split(' ')[1]) {
+              weekdayKey = (weekday + ' ' + classDataWithSchedule.schedule.split(' ')[1].toLowerCase()).trim();
+            }
+            weekday = vi2en[weekdayKey] || weekday;
+          } else if (classDataWithSchedule.schedule_day) {
+            weekday = classDataWithSchedule.schedule_day;
+          }
+          const valid = generateValidDates(classDataWithSchedule.startDate, classDataWithSchedule.endDate, weekday);
+          setValidDates(valid);
+          // Chọn ngày hôm nay nếu hợp lệ, nếu không chọn ngày đầu tiên
+          const today = new Date().toISOString().split('T')[0];
+          setSelectedDate(valid.includes(today) ? today : valid[0] || '');
+        }
+      } catch (err) {
+        setError('Không thể tải thông tin lớp học. Vui lòng thử lại sau.');
+        console.error('Error fetching class info:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [classId]);
+
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      if (!classId || !selectedDate) return;
+      try {
+        setLoading(true);
+        const attendanceData = await teacherService.getClassAttendanceByDate(Number(classId), selectedDate);
+        setAttendance(attendanceData);
+        setError(null);
       } catch (err) {
         setError('Không thể tải thông tin điểm danh. Vui lòng thử lại sau.');
+        setAttendance([]);
         console.error('Error fetching attendance data:', err);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchData();
+    fetchAttendance();
   }, [classId, selectedDate]);
-  // handleUpdateAttendance is now handled within the AttendanceView component
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      if (!classId) return;
+      try {
+        const studentsData = await teacherService.getClassStudents(Number(classId));
+        setStudents(studentsData);
+      } catch (err) {
+        console.error('Error fetching students:', err);
+      }
+    };
+    fetchStudents();
+  }, [classId]);
 
   const handleExportAttendance = async (format: 'csv' | 'pdf') => {
     if (!classId) return;
@@ -57,7 +163,6 @@ const TeacherClassAttendancePage = () => {
       alert(`Không thể xuất dữ liệu điểm danh dưới dạng ${format.toUpperCase()}. Vui lòng thử lại sau.`);
     }
   };
-  // Status styling is now handled within the AttendanceView component
 
   return (
     <div className="w-screen h-screen bg-gray-100">
@@ -105,20 +210,25 @@ const TeacherClassAttendancePage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4 md:mb-0">
               <div>
                 <label htmlFor="date-select" className="block text-sm font-medium text-gray-700 mb-1">
-                  Chọn ngày điểm danh:
+                  Chọn buổi học:
                 </label>
-                <input
-                  type="date"
+                <select
                   id="date-select"
                   value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={e => setSelectedDate(e.target.value)}
                   className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                />
+                >
+                  {validDates.map(date => (
+                    <option key={date} value={date}>
+                      {new Date(date).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' })}
+                    </option>
+                  ))}
+                </select>
               </div>
               <button
                 onClick={() => {
                   const today = new Date().toISOString().split('T')[0];
-                  setSelectedDate(today);
+                  if (validDates.includes(today)) setSelectedDate(today);
                 }}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
@@ -191,16 +301,33 @@ const TeacherClassAttendancePage = () => {
                 {/* Use the AttendanceView component */}
                 <AttendanceView 
                   attendance={attendance}
+                  students={students}
                   date={selectedDate}
-                  onUpdateAttendance={async (recordId, status) => {
-                    await teacherService.updateAttendance(recordId, status);
-                    
-                    // Update local state
-                    setAttendance(attendance.map(record => 
-                      record.id === recordId 
-                        ? { ...record, status } 
-                        : record
-                    ));
+                  onUpdateAttendance={async (record, status) => {
+                    console.log('[TeacherClassAttendancePage] onUpdateAttendance received:', record, status);
+                    console.log('DEBUG onUpdateAttendance record:', record);
+                    console.log('DEBUG onUpdateAttendance status:', status);
+                    let success = false;
+                    if (!classInfo) throw new Error('Missing class info');
+                    const startTime = classInfo.start_time || getStartTimeFromSchedule(classInfo.schedule);
+                    const checkin_time = selectedDate + ' ' + startTime;
+                    const course_id = classInfo.id;
+                    const student_id = String(record.student_id || record.studentId).trim();
+                    const payload = {
+                      status,
+                      checkin_time,
+                      room: classInfo.room,
+                      course_id: Number(course_id),
+                      student_id, // luôn trim để tránh lỗi foreign key
+                      rfid_uid: record.rfid_uid || '',
+                      attendanceId: record.attendance?.attendance_id || 0, // Lấy attendance_id đúng từ object attendance
+                    };
+                    console.log('DEBUG onUpdateAttendance payload:', payload);
+                    success = await teacherService.updateAttendance(payload);
+                    if (success && classId && selectedDate) {
+                      const updated = await teacherService.getClassAttendanceByDate(Number(classId), selectedDate);
+                      setAttendance(updated);
+                    }
                   }}
                 />
               </div>

@@ -14,6 +14,11 @@ $dbUsername = $_ENV['DB_USERNAME'];
 $dbPassword = $_ENV['DB_PASSWORD'];
 $dbName = $_ENV['DB_NAME'];
 
+define('DB_HOST', $dbHost);
+define('DB_USER', $dbUsername);
+define('DB_PASS', $dbPassword);
+define('DB_NAME', $dbName);
+
 // Kiểm tra nếu thiếu biến môi trường
 if (!$dbHost || !$dbUsername || !$dbName) {
     http_response_code(500);
