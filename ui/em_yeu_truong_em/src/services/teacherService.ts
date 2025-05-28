@@ -184,11 +184,21 @@ export class TeacherService {
         setTimeout(() => resolve(MOCK_DATA.classes), 300);
       });
     }
-    
-    // Sử dụng API thực tế khi đã sẵn sàng
-    try {      const response = await axios.get(`${API_BASE_URL}/teacher/classes.php`);
-      return response.data?.classes || [];
-
+    try {
+      const response = await axios.get(`${API_BASE_URL}/teacher/classes.php`);
+      // Map lại dữ liệu cho đúng interface ClassInfo
+      return (response.data?.classes || []).map((item: any) => ({
+        id: item.class_id,
+        name: item.class_code,
+        subject: item.course_name,
+        schedule: `${item.schedule_day} (${item.start_time?.slice(0,5)} - ${item.end_time?.slice(0,5)})`,
+        room: item.room,
+        semester: item.semester,
+        startDate: item.start_date,
+        endDate: item.end_date,
+        start_time: item.start_time,
+        end_time: item.end_time,
+      }));
     } catch (error) {
       console.error('Failed to fetch teacher classes:', error);
       throw error;
@@ -362,20 +372,20 @@ export class TeacherService {
   /**
    * Record manual attendance for a student
    * @param classId - The ID of the class
-   * @param studentId - The ID of the student
+   * @param studentId - The ID of the student (string)
    * @param date - The date for the attendance
    * @param status - The attendance status
    */
   async recordManualAttendance(
-    classId: number, 
-    studentId: number, 
-    date: string, 
+    classId: number,
+    studentId: string,
+    date: string,
     status: 'present' | 'absent' | 'late'
   ): Promise<boolean> {
     try {
       const response = await axios.post(`${API_BASE_URL}/teacher/manual_attendance.php`, {
-        classId,
-        studentId,
+        class_id: classId,
+        student_id: studentId,
         date,
         status
       });
@@ -390,21 +400,37 @@ export class TeacherService {
    * Update class schedule for emergencies
    * @param scheduleChange - The details of the schedule change
    */
-  async updateSchedule(scheduleChange: ScheduleChange): Promise<boolean> {
+  async updateSchedule(scheduleChange: ScheduleChange & { status: string }): Promise<boolean> {
     try {
-      const response = await axios.post(`${API_BASE_URL}/teacher/manage_schedule_changes.php`, scheduleChange);
+      // Map camelCase fields to snake_case for backend compatibility
+      const payload: any = {
+        class_id: scheduleChange.classId,
+        original_date: scheduleChange.originalDate,
+        status: scheduleChange.status,
+        original_room: scheduleChange.originalRoom,
+        reason: scheduleChange.reason,
+      };
+      if (scheduleChange.newDate) payload.new_date = scheduleChange.newDate;
+      if (scheduleChange.newRoom) payload.new_room = scheduleChange.newRoom;
+      if (scheduleChange.id) payload.schedule_change_id = scheduleChange.id;
+
+      // Nếu status là 'rescheduled' thì luôn gửi new_date
+      if (payload.status === 'rescheduled' && !payload.new_date) {
+        throw new Error('Khi dời ngày học (rescheduled) phải chọn ngày mới!');
+      }
+
+      const response = await axios.post(`${API_BASE_URL}/teacher/manage_schedule_changes.php`, payload);
       return response.data.success;
     } catch (error) {
       console.error('Failed to update class schedule:', error);
       throw error;
     }
-  }
-  /**
+  }  /**
    * Export attendance data for a class
    * @param classId - The ID of the class
-   * @param format - Export format (csv or pdf)
+   * @param format - Export format (csv, pdf, or excel)
    */
-  async exportAttendance(classId: number, format: 'csv' | 'pdf'): Promise<string> {
+  async exportAttendance(classId: number, format: 'csv' | 'pdf' | 'excel'): Promise<string> {
     try {
       const response = await axios.get(`${API_BASE_URL}/teacher/export_attendance.php`, {
         params: { classId, format },
@@ -412,9 +438,12 @@ export class TeacherService {
       });
       
       // Create a download URL for the file
-      const blob = new Blob([response.data], { 
-        type: format === 'csv' ? 'text/csv' : 'application/pdf' 
-      });
+      let mimeType = 'application/octet-stream';
+      if (format === 'csv') mimeType = 'text/csv';
+      else if (format === 'pdf') mimeType = 'application/pdf';
+      else if (format === 'excel') mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      
+      const blob = new Blob([response.data], { type: mimeType });
       return URL.createObjectURL(blob);
     } catch (error) {
       console.error(`Failed to export attendance for class ${classId}:`, error);
@@ -443,6 +472,42 @@ export class TeacherService {
     } catch (error) {
       console.error('Failed to submit bulk attendance:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Lấy lịch sử thay đổi lịch học của một lớp
+   * @param classId - ID của lớp học
+   */
+  async getScheduleChanges(classId: number): Promise<ScheduleChange[]> {
+    if (MOCK_DATA.USE_MOCK) {
+      // Trả về mảng rỗng hoặc dữ liệu mock nếu cần
+      return [];
+    }
+    try {
+      const response = await axios.get(`${API_BASE_URL}/teacher/manage_schedule_changes.php`, {
+        params: { class_id: classId }
+      });
+      // API trả về { success, schedule_changes: [...] }
+      if (response.data && response.data.success && Array.isArray(response.data.schedule_changes)) {
+        // Đổi tên trường cho phù hợp với frontend
+        return response.data.schedule_changes.map((item: any) => ({
+          id: item.schedule_change_id,
+          classId: item.class_id,
+          originalDate: item.original_date,
+          newDate: item.new_date,
+          originalRoom: item.original_room,
+          newRoom: item.new_room,
+          reason: item.reason,
+          status: item.status,
+          createdAt: item.created_at,
+          updatedAt: item.updated_at,
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch schedule changes:', error);
+      return [];
     }
   }
 }

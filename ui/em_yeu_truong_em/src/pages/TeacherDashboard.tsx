@@ -110,26 +110,6 @@ const TeacherDashboard = () => {
                                 <span className="text-lg font-bold text-purple-700">Xem lịch dạy</span>
                             </div>
                         </Link>
-
-                        <Link
-                            to="/teacher/quick-attendance"
-                            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h2 className="text-xl font-semibold text-yellow-900">Điểm danh nhanh</h2>
-                                    <p className="text-yellow-800 mt-2">Điểm danh thủ công theo buổi học</p>
-                                </div>
-                                <div className="bg-yellow-100 p-3 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="mt-4">
-                                <span className="text-lg font-bold text-yellow-700">Điểm danh nhanh</span>
-                            </div>
-                        </Link>
                     </div>
                 )}
 

@@ -8,9 +8,11 @@ ini_set('display_startup_errors', 0);
 require_once __DIR__ . '/../../config/config.php'; // Kết nối database
 require_once __DIR__ . '/../../modules/Session.php';
 require_once __DIR__ . '/../../modules/Response.php';
+require_once __DIR__ . '/../../modules/CORS.php';
 
 // Khởi động session
 Session::start();
+CORS::enableCORS();
 
 // Kiểm tra quyền admin hoặc manager
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
@@ -37,11 +39,14 @@ switch ($action) {
             Response::json(["error" => "Unauthorized"], 403);
             exit;
         }
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (!isset($data['student_id'], $data['full_name'], $data['class'], $data['rfid_uid'])) {
+        $data = json_decode(file_get_contents('php://input'), true);        if (!isset($data['student_id'], $data['full_name'], $data['class'])) {
             Response::json(["error" => "Missing required fields"], 400);
             exit;
         }
+        
+        // RFID UID is optional - set to NULL if empty to avoid unique constraint issues
+        $rfid_uid = isset($data['rfid_uid']) && !empty(trim($data['rfid_uid'])) ? trim($data['rfid_uid']) : null;
+        
         $stmt = $conn->prepare("SELECT student_id FROM students WHERE student_id = ?");
         $stmt->bind_param("s", $data['student_id']);
         $stmt->execute();
@@ -50,10 +55,30 @@ switch ($action) {
             Response::json(["error" => "Mã sinh viên đã tồn tại"], 409);
             exit;
         }
-        $stmt = $conn->prepare("INSERT INTO students (student_id, full_name, class, rfid_uid) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $data['student_id'], $data['full_name'], $data['class'], $data['rfid_uid']);
-        $stmt->execute();
-        Response::json(["success" => true]);
+        
+        try {
+            // Start transaction
+            $conn->begin_transaction();
+            
+            // Insert student
+            $stmt = $conn->prepare("INSERT INTO students (student_id, full_name, class, rfid_uid) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $data['student_id'], $data['full_name'], $data['class'], $rfid_uid);
+            $stmt->execute();
+            
+            // Create user account for student
+            $password_hash = password_hash($data['student_id'], PASSWORD_BCRYPT);
+            $stmt = $conn->prepare("INSERT INTO users (username, password, role, student_id) VALUES (?, ?, 'student', ?)");
+            $stmt->bind_param("sss", $data['student_id'], $password_hash, $data['student_id']);
+            $stmt->execute();
+            
+            // Commit transaction
+            $conn->commit();
+            Response::json(["success" => true, "message" => "Thêm sinh viên thành công"]);
+        } catch (Exception $e) {
+            // Rollback transaction
+            $conn->rollback();
+            Response::json(["error" => "Lỗi khi thêm sinh viên: " . $e->getMessage()], 500);
+        }
         break;
 
     case 'edit':
@@ -62,14 +87,20 @@ switch ($action) {
             exit;
         }
         $data = json_decode(file_get_contents('php://input'), true);
-        if (!isset($data['student_id'], $data['full_name'], $data['class'], $data['rfid_uid'])) {
+        if (!isset($data['student_id'], $data['full_name'], $data['class'])) {
             Response::json(["error" => "Missing required fields"], 400);
-            exit;
-        }
+            exit;        }
+        
+        // RFID UID is optional - set to NULL if empty to avoid unique constraint issues
+        $rfid_uid = isset($data['rfid_uid']) && !empty(trim($data['rfid_uid'])) ? trim($data['rfid_uid']) : null;
+        
         $stmt = $conn->prepare("UPDATE students SET full_name = ?, class = ?, rfid_uid = ? WHERE student_id = ?");
-        $stmt->bind_param("ssss", $data['full_name'], $data['class'], $data['rfid_uid'], $data['student_id']);
-        $stmt->execute();
-        Response::json(["success" => true]);
+        $stmt->bind_param("ssss", $data['full_name'], $data['class'], $rfid_uid, $data['student_id']);
+        if ($stmt->execute()) {
+            Response::json(["success" => true, "message" => "Cập nhật sinh viên thành công"]);
+        } else {
+            Response::json(["error" => "Lỗi khi cập nhật sinh viên"], 500);
+        }
         break;
 
     case 'delete':

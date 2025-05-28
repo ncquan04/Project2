@@ -20,24 +20,32 @@ const TeacherAttendancePage = () => {
       try {
         setLoading(true);
         const data = await teacherService.getTeacherClasses();
-        setClasses(data);
+        // Map data to ClassInfo interface (handle backend field names)
+        const mapped = data.map((item: any) => ({
+          id: item.class_id ?? item.id,
+          name: item.class_code ?? item.name,
+          subject: item.course_name ?? item.subject,
+          schedule: item.schedule_day && item.start_time && item.end_time
+            ? `${item.schedule_day} (${item.start_time} - ${item.end_time})`
+            : item.schedule,
+          room: item.room,
+        }));
+        setClasses(mapped);
 
         // In a real implementation, you would fetch attendance statistics for each class
         // For now, we'll generate mock data
         const mockStats: Record<number, any> = {};
-        data.forEach(classItem => {
+        mapped.forEach(classItem => {
           mockStats[classItem.id] = {
             total: Math.floor(Math.random() * 30) + 20, // Random number of students between 20-50
             present: 0,
             absent: 0,
             late: 0
           };
-          
           mockStats[classItem.id].present = Math.floor(Math.random() * mockStats[classItem.id].total * 0.8);
           mockStats[classItem.id].late = Math.floor(Math.random() * (mockStats[classItem.id].total - mockStats[classItem.id].present) * 0.5);
           mockStats[classItem.id].absent = mockStats[classItem.id].total - mockStats[classItem.id].present - mockStats[classItem.id].late;
         });
-        
         setAttendanceStats(mockStats);
       } catch (err) {
         setError('Không thể tải danh sách lớp học. Vui lòng thử lại sau.');
@@ -51,8 +59,8 @@ const TeacherAttendancePage = () => {
   }, []);
 
   const filteredClasses = classes.filter(classItem => 
-    classItem.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    classItem.subject.toLowerCase().includes(searchTerm.toLowerCase())
+    (classItem.name && classItem.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (classItem.subject && classItem.subject.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const getAttendanceStatusColor = (classId: number) => {
@@ -91,18 +99,6 @@ const TeacherAttendancePage = () => {
               <span className="ml-2 text-gray-600">Điểm danh</span>
             </div>
             <h1 className="text-3xl font-bold text-gray-800">Quản lý điểm danh</h1>
-          </div>
-          
-          <div className="mt-4 md:mt-0">
-            <Link
-              to="/teacher/quick-attendance"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg inline-flex items-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              Điểm danh nhanh
-            </Link>
           </div>
         </div>
 
@@ -193,12 +189,6 @@ const TeacherAttendancePage = () => {
                       className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                     >
                       Xem chi tiết
-                    </Link>
-                    <Link
-                      to={`/teacher/quick-attendance?classId=${classItem.id}`}
-                      className="text-green-600 hover:text-green-800 text-sm font-medium"
-                    >
-                      Điểm danh
                     </Link>
                   </div>
                 </div>

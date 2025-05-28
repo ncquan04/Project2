@@ -1,12 +1,13 @@
 <?php
 // api/teacher/manage_schedule_changes.php
 require_once __DIR__ . '/../../modules/Session.php';
+require_once __DIR__ . '/../../modules/Response.php';
 
 require_once __DIR__ . '/../../modules/CORS.php';
 require_once __DIR__ . '/../../config/config.php';
 
 // Khởi động session
-// K�ch ho?t CORS
+// K�ch ho�t CORS
 CORS::enableCORS();
 
 // Kh?i d?ng session
@@ -186,9 +187,18 @@ try {
                     original_room, new_room, reason, created_at, updated_at, notification_sent
                   ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 0)";
         
+        // Sửa lỗi: bind_param phải đúng số lượng và kiểu biến (i s s s s s s)
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("issssssi", $class_id, $original_date, $new_date, $status, 
-                           $original_room, $new_room, $reason);
+        $stmt->bind_param(
+            "issssss",
+            $class_id,
+            $original_date,
+            $new_date,
+            $status,
+            $original_room,
+            $new_room,
+            $reason
+        );
         $result = $stmt->execute();
         
         if ($result) {
@@ -374,6 +384,20 @@ try {
         } else {
             throw new Exception("Không thể xóa thay đổi lịch học: " . $deleteStmt->error);
         }
+    }
+    
+    // Thông tin API cho health check hoặc mô tả endpoint
+    else if ($method === 'OPTIONS') {
+        Response::json([
+            "success" => true,
+            "message" => "API endpoint for managing class schedule changes. Methods supported: GET, POST, PUT, DELETE.",
+            "fields_required" => [
+                "POST" => ["class_id", "original_date", "status", "new_date (nếu status là rescheduled)", "original_room", "new_room", "reason"],
+                "PUT" => ["schedule_change_id", "status", "new_date", "original_room", "new_room", "reason", "notification_sent"],
+                "DELETE" => ["id (query param)"]
+            ]
+        ], 200);
+        exit;
     }
     
     else {

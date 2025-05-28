@@ -17,6 +17,7 @@ $dbName = $_ENV['DB_NAME'];
 define('DB_HOST', $dbHost);
 define('DB_USER', $dbUsername);
 define('DB_PASS', $dbPassword);
+define('DB_PASSWORD', $dbPassword); // Thêm dòng này để tránh lỗi undefined constant
 define('DB_NAME', $dbName);
 
 // Kiểm tra nếu thiếu biến môi trường

@@ -74,7 +74,7 @@ try {
     
     $classInfo = $checkResult->fetch_assoc();
     
-    // Lấy danh sách sinh viên trong lớp, đồng thời lấy tên lớp từ bảng classes
+    // Lấy danh sách sinh viên trong lớp, đồng thời lấy tên lớp từ bảng classescd
     $studentsStmt = $conn->prepare("SELECT s.student_id, s.full_name, cl.class_code AS student_class, s.rfid_uid 
                                    FROM students s 
                                    JOIN student_classes sc ON s.student_id = sc.student_id 

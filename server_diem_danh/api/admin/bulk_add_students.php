@@ -5,17 +5,20 @@ ini_set('display_startup_errors', 0);
 require_once __DIR__ . '/../../config/config.php'; // Kết nối database
 require_once __DIR__ . '/../../modules/Session.php';
 require_once __DIR__ . '/../../modules/Response.php';
+require_once __DIR__ . '/../../modules/CORS.php';
 
-// Session::start();
+// Khởi động session và CORS
+Session::start();
+CORS::enableCORS();
 
-// if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['manager'])) {
-//     Response::json(["error" => "Unauthorized"], 403);
-//     exit;
-// }
+// Kiểm tra quyền admin
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'manager'])) {
+    Response::json(["error" => "Unauthorized"], 403);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
+    Response::json(['error' => 'Method Not Allowed'], 405);
     exit;
 }
 
@@ -23,8 +26,7 @@ $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
 if (!isset($data['students']) || !is_array($data['students'])) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Invalid data']);
+    Response::json(['error' => 'Invalid data'], 400);
     exit;
 }
 
@@ -38,8 +40,11 @@ $conn->begin_transaction();
 try {
     foreach ($students as $student) {
         try {
+            // Handle empty RFID UID to avoid unique constraint issues
+            $rfid_uid = isset($student['rfid_uid']) && !empty(trim($student['rfid_uid'])) ? trim($student['rfid_uid']) : null;
+            
             $stmt = $conn->prepare("INSERT INTO students (student_id, rfid_uid, full_name, class) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $student['student_id'], $student['rfid_uid'], $student['full_name'], $student['class']);
+            $stmt->bind_param("ssss", $student['student_id'], $rfid_uid, $student['full_name'], $student['class']);
             $stmt->execute();
 
             $password_hash = password_hash($student['student_id'], PASSWORD_BCRYPT);
@@ -54,19 +59,22 @@ try {
                 $fail_count++;
             } else {
                 throw $e;
-            }
-        }
+            }        }
     }
+    
     $conn->commit();
-    echo json_encode([
+    Response::json([
         'success' => true,
         'message' => "Đã import thành công $success_count sinh viên. $fail_count sinh viên không được import do trùng lặp.",
+        'added_count' => $success_count,
+        'failed_count' => $fail_count,
         'errors' => $errors
     ]);
 } catch (Exception $e) {
     $conn->rollback();
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    Response::json(['success' => false, 'message' => $e->getMessage()], 500);
+}
+?>
 }
 
 $conn->close();

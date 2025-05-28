@@ -101,7 +101,6 @@ const AttendanceView = ({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã sinh viên</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Họ và tên</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giờ điểm danh</th>
               {isEditable && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
               )}
@@ -132,9 +131,6 @@ const AttendanceView = ({
                         {getStatusText(status)}
                       </span>
                     )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {record.time ?? '-'}
                   </td>
                   {isEditable && onUpdateAttendance && (
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

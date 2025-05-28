@@ -96,13 +96,17 @@ export const login = async (username: string, password: string): Promise<AuthRes
  */
 export const checkAuth = async (): Promise<AuthResponse> => {
   try {
-    const response = await fetch(`${API_URL}/auth_api.php?action=check_auth`, {
+    // Sử dụng auth_status.php để kiểm tra trạng thái đăng nhập
+    const response = await fetch(`${API_URL}/auth_status.php`, {
       method: 'GET',
-      credentials: 'include', // Cho phép gửi và nhận cookies
+      credentials: 'include',
     });
-
     const data = await response.json();
-    return data;
+    // Chuẩn hóa kết quả cho context
+    if ((data.success || data.loggedIn) && data.user) {
+      return { success: true, user: data.user, role: data.user.role, message: data.message || '' };
+    }
+    return { success: false, message: data.message || 'Chưa đăng nhập' };
   } catch (error) {
     console.error('Check auth error:', error);
     return {

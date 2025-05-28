@@ -20,7 +20,7 @@ const TeacherHeader = () => {
   };
 
   return (
-    <nav className="bg-blue-800 text-white">
+    <nav className="bg-white text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -63,13 +63,6 @@ const TeacherHeader = () => {
                   className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 ${isActive('/teacher/schedule')}`}
                 >
                   Lịch dạy
-                </Link>
-
-                <Link
-                  to="/teacher/quick-attendance"
-                  className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 ${isActive('/teacher/quick-attendance')}`}
-                >
-                  Điểm danh nhanh
                 </Link>
               </div>
             </div>
@@ -206,14 +199,6 @@ const TeacherHeader = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Lịch dạy
-            </Link>
-
-            <Link
-              to="/teacher/quick-attendance"
-              className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 ${isActive('/teacher/quick-attendance')}`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Điểm danh nhanh
             </Link>
           </div>
 

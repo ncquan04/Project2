@@ -16,12 +16,14 @@ const TeacherClassSchedulePage = () => {
     originalRoom: string;
     newRoom?: string;
     reason: string;
+    status: string;
   }>({
     originalDate: new Date().toISOString().split('T')[0],
     newDate: '',
     originalRoom: '',
     newRoom: '',
     reason: '',
+    status: '',
   });
 
   useEffect(() => {
@@ -31,7 +33,11 @@ const TeacherClassSchedulePage = () => {
         setLoading(true);
         const classData = await teacherService.getClassSchedule(Number(classId));
         setClassInfo(classData);
-        setScheduleChanges([]);
+        
+        // Lấy lịch sử thay đổi thực tế từ API
+        const changes = await teacherService.getScheduleChanges(Number(classId));
+        setScheduleChanges(changes);
+        
         setFormData(prev => ({
           ...prev,
           originalRoom: classData.room
@@ -46,7 +52,7 @@ const TeacherClassSchedulePage = () => {
     fetchData();
   }, [classId]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -56,28 +62,20 @@ const TeacherClassSchedulePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!classId) return;
-    
     try {
-      const scheduleChange: ScheduleChange = {
+      const scheduleChange = {
         classId: Number(classId),
         ...formData
       };
-      
       const success = await teacherService.updateSchedule(scheduleChange);
       
       if (success) {
         alert('Thay đổi lịch học thành công!');
         
-        // Add the new schedule change to the list
-        setScheduleChanges([
-          {
-            id: Date.now(), // Temporary ID
-            ...scheduleChange
-          },
-          ...scheduleChanges
-        ]);
+        // Lấy lại lịch sử thay đổi mới nhất từ API
+        const changes = await teacherService.getScheduleChanges(Number(classId));
+        setScheduleChanges(changes);
         
         // Reset form
         setFormData({
@@ -86,6 +84,7 @@ const TeacherClassSchedulePage = () => {
           originalRoom: classInfo?.room || '',
           newRoom: '',
           reason: '',
+          status: '',
         });
         
         // Hide form
@@ -264,6 +263,24 @@ const TeacherClassSchedulePage = () => {
                       placeholder="Nhập lý do thay đổi lịch học"
                       required
                     />
+                  </div>
+                  <div className="mb-6">
+                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+                      Loại thay đổi
+                    </label>
+                    <select
+                      id="status"
+                      name="status"
+                      value={formData.status || ''}
+                      onChange={handleInputChange}
+                      className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      required
+                    >
+                      <option value="">-- Chọn loại thay đổi --</option>
+                      <option value="cancelled">Hủy buổi học</option>
+                      <option value="rescheduled">Dời ngày học</option>
+                      <option value="room_change">Đổi phòng</option>
+                    </select>
                   </div>
                   <div className="flex justify-end">
                     <button

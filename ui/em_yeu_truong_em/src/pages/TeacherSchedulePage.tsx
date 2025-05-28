@@ -47,7 +47,7 @@ const TeacherSchedulePage = () => {
         const data = await teacherService.getTeacherClasses();
         setClasses(data);
 
-        // Organize classes by weekday and time
+        // Organize classes by weekday and time based on real schedule data
         const schedule: WeeklySchedule = {
           monday: { morning: [], afternoon: [], evening: [] },
           tuesday: { morning: [], afternoon: [], evening: [] },
@@ -58,29 +58,63 @@ const TeacherSchedulePage = () => {
           sunday: { morning: [], afternoon: [], evening: [] }
         };
 
-        // In a real implementation, you would parse the schedule string from each class
-        // For now, we'll randomly assign classes to days and times
+        // Helper to determine time slot
+        const getTimeSlot = (startTime?: string) => {
+          if (!startTime) return 'morning';
+          const hour = parseInt(startTime.split(':')[0], 10);
+          if (hour < 12) return 'morning';
+          if (hour < 18) return 'afternoon';
+          return 'evening';
+        };
+
+        // Helper to parse Vietnamese weekday to English
+        const vi2en: Record<string, string> = {
+          'thứ hai': 'monday',
+          'thứ ba': 'tuesday',
+          'thứ tư': 'wednesday',
+          'thứ năm': 'thursday',
+          'thứ sáu': 'friday',
+          'thứ bảy': 'saturday',
+          'chủ nhật': 'sunday',
+          'monday': 'monday',
+          'tuesday': 'tuesday',
+          'wednesday': 'wednesday',
+          'thursday': 'thursday',
+          'friday': 'friday',
+          'saturday': 'saturday',
+          'sunday': 'sunday',
+        };
+
         data.forEach(classItem => {
-          const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-          const times = ['morning', 'afternoon', 'evening'];
-          
-          // Randomly assign 1-3 weekdays for each class
-          const numDays = Math.floor(Math.random() * 3) + 1;
-          const selectedDays = new Set<string>();
-          
-          while (selectedDays.size < numDays) {
-            const dayIndex = Math.floor(Math.random() * weekdays.length);
-            selectedDays.add(weekdays[dayIndex]);
+          // Prefer schedule_day if available
+          let weekday = '';
+          if ((classItem as any).schedule_day) {
+            weekday = ((classItem as any).schedule_day || '').toLowerCase();
+          } else if (classItem.schedule) {
+            const scheduleLower = classItem.schedule.toLowerCase();
+            // Ưu tiên tách tiếng Việt
+            if (scheduleLower.startsWith('chủ nhật')) {
+              weekday = 'chủ nhật';
+            } else {
+              const matchVi = scheduleLower.match(/thứ [a-záàạảãâầấậẩẫăằắặẳẵéèẹẻẽêềếệểễíìịỉĩóòọỏõôồốộổỗơờớợởỡúùụủũưừứựửữýỳỵỷỹđ]+/);
+              if (matchVi) {
+                weekday = matchVi[0];
+              } else {
+                // Nếu không phải tiếng Việt, tách từ đầu chuỗi (trước dấu cách hoặc '(')
+                const firstWord = scheduleLower.split(/\s|\(/)[0];
+                weekday = firstWord;
+              }
+            }
           }
-          
-          selectedDays.forEach(day => {
-            const timeIndex = Math.floor(Math.random() * times.length);
-            const timeSlot = times[timeIndex] as 'morning' | 'afternoon' | 'evening';
-            
-            schedule[day as keyof WeeklySchedule][timeSlot].push(classItem);
-          });
+          const dayKey = vi2en[weekday] || weekday;
+          if (schedule[dayKey as keyof WeeklySchedule]) {
+            const timeSlot = getTimeSlot(classItem.start_time);
+            schedule[dayKey as keyof WeeklySchedule][timeSlot as keyof WeekdayClass].push(classItem);
+          } else {
+            // Debug: log classes that could not be assigned
+            console.warn('Không xác định được thứ cho lớp:', classItem, 'weekday:', weekday, 'dayKey:', dayKey);
+          }
         });
-        
         setWeeklySchedule(schedule);
       } catch (err) {
         setError('Không thể tải lịch giảng dạy. Vui lòng thử lại sau.');
@@ -151,15 +185,17 @@ const TeacherSchedulePage = () => {
     sunday: 0
   };
 
-  const renderClassItem = (classItem: ClassInfo, dayKey: string, timeSlot: string) => {
+  const renderClassItem = (classItem: ClassInfo, dayKey: string, timeSlot: string, idx?: number) => {
     const dayOfWeek = weekdayToIndex[dayKey as keyof typeof weekdayToIndex];
     const currentDate = weekDates[dayOfWeek];
-    
     const isTodaysClass = currentDate.toDateString() === new Date().toDateString();
-    
+    // Key duy nhất: nếu có id thì dùng id, nếu không thì dùng idx
+    const key = (classItem.id !== undefined && classItem.id !== null)
+      ? `${classItem.id}-${dayKey}-${timeSlot}`
+      : `noid-${dayKey}-${timeSlot}-${idx}`;
     return (
       <div 
-        key={`${classItem.id}-${dayKey}-${timeSlot}`} 
+        key={key}
         className={`p-3 rounded-lg mb-2 ${isTodaysClass ? 'bg-blue-50 border border-blue-200' : 'bg-white border border-gray-200'}`}
       >
         <div className="flex justify-between items-start">
@@ -183,7 +219,7 @@ const TeacherSchedulePage = () => {
             </span>
           </div>
           <Link
-            to={`/teacher/classes/${classItem.id}`}
+            to={`/teacher/classes/${(classItem as any).class_id ?? classItem.id}`}
             className="text-blue-600 hover:text-blue-800"
           >
             Chi tiết
@@ -260,15 +296,15 @@ const TeacherSchedulePage = () => {
         ) : (
           <div className="grid grid-cols-7 gap-2">
             {/* For each day of the week */}
-            {Object.entries(weeklySchedule).map(([day, daySchedule], index) => (
+            {Object.entries(weeklySchedule).map(([day, daySchedule]) => (
               <div key={day} className="space-y-4">
                 {/* Morning */}
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 border-b pb-2 mb-2">Sáng</h3>
                   <div className="space-y-2">
                     {daySchedule.morning.length > 0 ? (
-                      daySchedule.morning.map((classItem: any) => 
-                        renderClassItem(classItem, day, 'morning')
+                      daySchedule.morning.map((classItem: any, idx: number) => 
+                        renderClassItem(classItem, day, 'morning', idx)
                       )
                     ) : (
                       <div className="text-sm text-gray-400 h-16 flex items-center justify-center">
@@ -283,8 +319,8 @@ const TeacherSchedulePage = () => {
                   <h3 className="text-sm font-medium text-gray-500 border-b pb-2 mb-2">Chiều</h3>
                   <div className="space-y-2">
                     {daySchedule.afternoon.length > 0 ? (
-                      daySchedule.afternoon.map((classItem: any) => 
-                        renderClassItem(classItem, day, 'afternoon')
+                      daySchedule.afternoon.map((classItem: any, idx: number) => 
+                        renderClassItem(classItem, day, 'afternoon', idx)
                       )
                     ) : (
                       <div className="text-sm text-gray-400 h-16 flex items-center justify-center">
@@ -299,8 +335,8 @@ const TeacherSchedulePage = () => {
                   <h3 className="text-sm font-medium text-gray-500 border-b pb-2 mb-2">Tối</h3>
                   <div className="space-y-2">
                     {daySchedule.evening.length > 0 ? (
-                      daySchedule.evening.map((classItem: any) => 
-                        renderClassItem(classItem, day, 'evening')
+                      daySchedule.evening.map((classItem: any, idx: number) => 
+                        renderClassItem(classItem, day, 'evening', idx)
                       )
                     ) : (
                       <div className="text-sm text-gray-400 h-16 flex items-center justify-center">

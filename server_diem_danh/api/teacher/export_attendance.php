@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../modules/CORS.php';
 require_once __DIR__ . '/../../config/config.php';
 
 // Khởi động session
-// K�ch ho?t CORS
+// K�ch ho?t CORS
 CORS::enableCORS();
 
 // Kh?i d?ng session
@@ -27,9 +27,14 @@ if (!$teacher_id) {
 }
 
 // Lấy class_id từ tham số URL
-$class_id = isset($_GET['class_id']) ? intval($_GET['class_id']) : 0;
+$class_id = isset($_GET['class_id']) ? intval($_GET['class_id']) : (isset($_GET['classId']) ? intval($_GET['classId']) : 0);
 $week_number = isset($_GET['week']) ? intval($_GET['week']) : null;
-$export_format = isset($_GET['format']) ? $_GET['format'] : 'xlsx';
+$export_format = isset($_GET['format']) ? strtolower($_GET['format']) : 'excel';
+
+// Xác nhận format hợp lệ
+if (!in_array($export_format, ['excel', 'csv', 'pdf'])) {
+    $export_format = 'excel'; // Mặc định là excel nếu định dạng không hợp lệ
+}
 
 if ($class_id <= 0) {
     Response::json(["success" => false, "error" => "Invalid class ID"], 400);
@@ -250,50 +255,197 @@ try {
         
         $excelData[] = $row;
     }
-    
-    // Tạo tên file dựa trên thông tin lớp
+      // Tạo tên file dựa trên thông tin lớp
     $className = preg_replace('/[^a-zA-Z0-9_]/', '_', $classInfo['class_code']);
     $semester = preg_replace('/[^a-zA-Z0-9_]/', '_', $classInfo['semester']);
     $weekSuffix = $week_number ? "_Week{$week_number}" : "";
     $filename = "Attendance_{$className}_{$semester}{$weekSuffix}_" . date('Ymd_His');
     
-    // Tạo header cho HTTP response để download file Excel
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
-    header('Cache-Control: max-age=0');
-    
-    // Tạo file Excel và gửi nó tới client
-    // Lưu ý: Cần cài thêm thư viện PHPSpreadsheet để tạo file Excel
-    // Đây chỉ là mã giả để minh họa cấu trúc, bạn cần thêm mã để tạo file Excel thực tế
-    
-    /*
-    // Ví dụ với PHPSpreadsheet
-    require 'vendor/autoload.php';
-    
-    use PhpOffice\PhpSpreadsheet\Spreadsheet;
-    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-    
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    
-    // Thêm dữ liệu vào bảng tính
-    foreach ($excelData as $rowIndex => $row) {
-        foreach ($row as $colIndex => $value) {
-            $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 1, $value);
+    // Tạo dữ liệu file theo định dạng yêu cầu
+    if ($export_format === 'csv') {
+        // Xuất CSV
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment;filename="' . $filename . '.csv"');
+        header('Cache-Control: max-age=0');
+        
+        $output = fopen('php://output', 'w');
+        
+        // Thêm BOM (Byte Order Mark) cho Excel đọc được UTF-8
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        // Ghi dữ liệu vào file CSV
+        foreach ($excelData as $row) {
+            fputcsv($output, $row);
+        }
+        
+        fclose($output);
+        exit;
+    } 
+    elseif ($export_format === 'excel') {
+        // Kiểm tra nếu thư viện PHPSpreadsheet đã được cài đặt
+        if (file_exists(__DIR__ . '/../../phpdotenv_lib/vendor/autoload.php')) {
+            require_once __DIR__ . '/../../phpdotenv_lib/vendor/autoload.php';
+            
+            try {
+                // Sử dụng PHPSpreadsheet để tạo file Excel
+                $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->setTitle('Danh sách điểm danh');
+                
+                // Thêm dữ liệu vào bảng tính
+                foreach ($excelData as $rowIndex => $row) {
+                    foreach ($row as $colIndex => $value) {
+                        $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 1, $value);
+                    }
+                }
+                
+                // Định dạng bảng tính
+                $headerRow = 'A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($header) - 1) . '1';
+                $sheet->getStyle($headerRow)->getFont()->setBold(true);
+                $sheet->getStyle($headerRow)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFCCCCCC');
+                
+                // Đặt độ rộng cột
+                foreach (range('A', $sheet->getHighestColumn()) as $col) {
+                    $sheet->getColumnDimension($col)->setAutoSize(true);
+                }
+                
+                // Tạo writer cho Excel
+                $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+                
+                // Thiết lập header HTTP
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+                header('Cache-Control: max-age=0');
+                
+                // Gửi file tới client
+                $writer->save('php://output');
+                exit;
+            } catch (\Exception $e) {
+                // Nếu có lỗi, ghi log lỗi và trả về dữ liệu JSON
+                error_log('PHPSpreadsheet error: ' . $e->getMessage());
+                
+                // Trả về dữ liệu JSON mà không có hỗ trợ Excel thực tế
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => false,
+                    "error" => "Không thể tạo file Excel: " . $e->getMessage(),
+                    "note" => "Thư viện PHPSpreadsheet cần được cài đặt"
+                ]);
+                exit;
+            }
+        } else {
+            // Thư viện PHPSpreadsheet chưa được cài đặt
+            // Trả về dữ liệu CSV như là phương án dự phòng
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment;filename="' . $filename . '.csv"');
+            header('Cache-Control: max-age=0');
+            
+            $output = fopen('php://output', 'w');
+            fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM
+            
+            foreach ($excelData as $row) {
+                fputcsv($output, $row);
+            }
+            
+            fclose($output);
+            exit;
+        }
+    }
+    elseif ($export_format === 'pdf') {
+        // Kiểm tra nếu thư viện TCPDF/FPDF/mPDF đã được cài đặt
+        if (file_exists(__DIR__ . '/../../phpdotenv_lib/vendor/autoload.php')) {
+            require_once __DIR__ . '/../../phpdotenv_lib/vendor/autoload.php';
+            
+            try {
+                // Giả sử chúng ta sử dụng mPDF
+                if (class_exists('\\Mpdf\\Mpdf')) {
+                    $mpdf = new \Mpdf\Mpdf([
+                        'margin_left' => 10,
+                        'margin_right' => 10,
+                        'margin_top' => 15,
+                        'margin_bottom' => 15,
+                    ]);
+                    
+                    // Thiết lập thông tin trang
+                    $mpdf->SetTitle("Danh sách điểm danh {$classInfo['class_code']}");
+                    $mpdf->SetCreator('Em Yêu Trường Em');
+                    
+                    // Tạo nội dung HTML
+                    $html = "<h1 style='text-align: center;'>Danh sách điểm danh lớp {$classInfo['class_code']}</h1>";
+                    $html .= "<p>Môn học: {$classInfo['course_name']}</p>";
+                    $html .= "<p>Phòng: {$classInfo['room']}</p>";
+                    
+                    // Bắt đầu bảng
+                    $html .= "<table border='1' cellpadding='5' style='width: 100%; border-collapse: collapse;'>";
+                    
+                    // Thêm header
+                    $html .= "<tr style='background-color: #CCCCCC;'>";
+                    foreach ($header as $cell) {
+                        $html .= "<th>{$cell}</th>";
+                    }
+                    $html .= "</tr>";
+                    
+                    // Thêm dữ liệu
+                    for ($i = 1; $i < count($excelData); $i++) {
+                        $html .= "<tr>";
+                        foreach ($excelData[$i] as $cell) {
+                            $html .= "<td>{$cell}</td>";
+                        }
+                        $html .= "</tr>";
+                    }
+                    
+                    $html .= "</table>";
+                    
+                    // Thêm trang vào PDF
+                    $mpdf->WriteHTML($html);
+                    
+                    // Thiết lập header HTTP
+                    header('Content-Type: application/pdf');
+                    header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
+                    
+                    // Gửi file tới client
+                    $mpdf->Output($filename . '.pdf', 'D');
+                    exit;
+                } else {
+                    throw new Exception("Thư viện PDF không được tìm thấy");
+                }
+            } catch (\Exception $e) {
+                // Nếu có lỗi, ghi log lỗi và trả về dữ liệu JSON
+                error_log('PDF generation error: ' . $e->getMessage());
+                
+                // Trả về dữ liệu JSON mà không có hỗ trợ PDF thực tế
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => false,
+                    "error" => "Không thể tạo file PDF: " . $e->getMessage(),
+                    "note" => "Cần cài đặt thư viện PDF như TCPDF, FPDF hoặc mPDF"
+                ]);
+                exit;
+            }
+        } else {
+            // Thư viện PDF chưa được cài đặt
+            // Trả về dữ liệu CSV như là phương án dự phòng
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment;filename="' . $filename . '.csv"');
+            header('Cache-Control: max-age=0');
+            
+            $output = fopen('php://output', 'w');
+            fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM
+            
+            foreach ($excelData as $row) {
+                fputcsv($output, $row);
+            }
+            
+            fclose($output);
+            exit;
         }
     }
     
-    // Định dạng bảng tính
-    $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
-    
-    $writer = new Xlsx($spreadsheet);
-    $writer->save('php://output');
-    */
-    
-    // Trả về dữ liệu JSON tạm thời cho mục đích phát triển
+    // Nếu không thỏa các điều kiện trên, trả về dữ liệu JSON
     Response::json([
         "success" => true,
-        "message" => "API xuất Excel đang được phát triển",
+        "message" => "API xuất dữ liệu đang được phát triển",
+        "format_requested" => $export_format,
         "class" => $classInfo,
         "week" => $week_number ? $week_number : "all",
         "students_count" => count($students),

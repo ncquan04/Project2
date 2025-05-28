@@ -52,13 +52,24 @@ const TeacherClassAttendancePage = () => {
     const weekdayNum = getWeekdayNumber(weekday);
     // Tìm ngày đầu tiên đúng thứ
     let current = new Date(start);
-    current.setHours(0,0,0,0);
+    current.setHours(12,0,0,0); // Đặt giờ giữa ngày để tránh lệch timezone
+    let loopCount = 0;
     while (current.getDay() !== weekdayNum) {
+      if (loopCount++ > 10) {
+        console.error('Infinite loop protection in generateValidDates', {startDate, endDate, weekday, weekdayNum});
+        break;
+      }
       current.setDate(current.getDate() + 1);
     }
     // Lặp qua từng tuần cho đến hết
     while (current <= end) {
-      result.push(current.toISOString().split('T')[0]);
+      // Tạo yyyy-mm-dd theo local time
+      const yyyy = current.getFullYear();
+      const mm = String(current.getMonth() + 1).padStart(2, '0');
+      const dd = String(current.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+      console.log('DEBUG generateValidDates push:', dateStr, 'getDay:', current.getDay(), 'weekdayNum:', weekdayNum);
+      result.push(dateStr);
       current.setDate(current.getDate() + 7);
     }
     return result;
@@ -75,10 +86,22 @@ const TeacherClassAttendancePage = () => {
         const classDataWithSchedule = classData as ClassInfoWithSchedule;
         if (classDataWithSchedule?.startDate && classDataWithSchedule?.endDate && classDataWithSchedule?.schedule) {
           let weekday = '';
-          if (classDataWithSchedule.schedule.includes('Thứ')) {
-            // Lấy từ đầu chuỗi
-            weekday = classDataWithSchedule.schedule.split(' ')[0].toLowerCase();
-            // Chuyển sang tiếng Anh cho hàm getWeekdayNumber
+          if (classDataWithSchedule.schedule.toLowerCase().includes('thứ') || classDataWithSchedule.schedule.toLowerCase().includes('chủ nhật')) {
+            // Lấy đúng tên thứ tiếng Việt ở đầu chuỗi
+            const scheduleLower = classDataWithSchedule.schedule.toLowerCase();
+            let weekdayKey = '';
+            if (scheduleLower.startsWith('chủ nhật')) {
+              weekdayKey = 'chủ nhật';
+            } else {
+              // Lấy "thứ hai", "thứ ba", ... (có dấu)
+              const match = scheduleLower.match(/thứ [a-zA-Zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]+/);
+              if (match) {
+                weekdayKey = match[0];
+              } else {
+                console.warn('Không tìm thấy thứ trong lịch:', classDataWithSchedule.schedule);
+              }
+            }
+            // Map sang tiếng Anh
             const vi2en: Record<string, string> = {
               'thứ hai': 'monday',
               'thứ ba': 'tuesday',
@@ -88,20 +111,26 @@ const TeacherClassAttendancePage = () => {
               'thứ bảy': 'saturday',
               'chủ nhật': 'sunday',
             };
-            // Xử lý trường hợp "thứ hai", "thứ ba"...
-            let weekdayKey = weekday;
-            if (weekday === 'thứ' && classDataWithSchedule.schedule.split(' ')[1]) {
-              weekdayKey = (weekday + ' ' + classDataWithSchedule.schedule.split(' ')[1].toLowerCase()).trim();
+            weekday = vi2en[weekdayKey] || '';
+            console.log('DEBUG weekdayKey:', weekdayKey, '=> weekday:', weekday);
+            if (!weekday) {
+              console.warn('Không map được thứ tiếng Việt sang tiếng Anh:', weekdayKey);
             }
-            weekday = vi2en[weekdayKey] || weekday;
           } else if (classDataWithSchedule.schedule_day) {
             weekday = classDataWithSchedule.schedule_day;
           }
-          const valid = generateValidDates(classDataWithSchedule.startDate, classDataWithSchedule.endDate, weekday);
-          setValidDates(valid);
-          // Chọn ngày hôm nay nếu hợp lệ, nếu không chọn ngày đầu tiên
-          const today = new Date().toISOString().split('T')[0];
-          setSelectedDate(valid.includes(today) ? today : valid[0] || '');
+          if (weekday) {
+            const weekdayNum = getWeekdayNumber(weekday);
+            console.log('DEBUG weekday:', weekday, '=> weekdayNum:', weekdayNum);
+            const valid = generateValidDates(classDataWithSchedule.startDate, classDataWithSchedule.endDate, weekday);
+            setValidDates(valid);
+            // Chọn ngày hôm nay nếu hợp lệ, nếu không chọn ngày đầu tiên
+            const today = new Date().toISOString().split('T')[0];
+            setSelectedDate(valid.includes(today) ? today : valid[0] || '');
+          } else {
+            setValidDates([]);
+            setSelectedDate('');
+          }
         }
       } catch (err) {
         setError('Không thể tải thông tin lớp học. Vui lòng thử lại sau.');
@@ -144,8 +173,7 @@ const TeacherClassAttendancePage = () => {
     };
     fetchStudents();
   }, [classId]);
-
-  const handleExportAttendance = async (format: 'csv' | 'pdf') => {
+  const handleExportAttendance = async (format: 'csv' | 'pdf' | 'excel') => {
     if (!classId) return;
     
     try {
@@ -234,9 +262,7 @@ const TeacherClassAttendancePage = () => {
               >
                 Hôm nay
               </button>
-            </div>
-
-            <div className="flex items-center gap-3">
+            </div>            <div className="flex items-center gap-3">
               <button
                 onClick={() => handleExportAttendance('csv')}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
@@ -245,6 +271,15 @@ const TeacherClassAttendancePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
                 Xuất CSV
+              </button>
+              <button
+                onClick={() => handleExportAttendance('excel')}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Xuất Excel
               </button>
               <button
                 onClick={() => handleExportAttendance('pdf')}
