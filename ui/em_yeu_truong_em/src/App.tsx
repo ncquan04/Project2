@@ -26,6 +26,7 @@ import TeacherSchedulePage from './pages/TeacherSchedulePage'
 // Admin pages
 import AdminDashboard from './pages/AdminDashboard'
 import AdminStudentsPage from './pages/AdminStudentsPage'
+import AdminTeachersPage from './pages/AdminTeachersPage'
 import AdminClassesPage from './pages/AdminClassesPage'
 import AdminRoomsPage from './pages/AdminRoomsPage'
 import AdminSchedulesPage from './pages/AdminSchedulesPage'
@@ -89,10 +90,10 @@ const AppRoutes = () => {
           <Route path="schedule" element={<ProtectedRoute role="teacher"><TeacherSchedulePage /></ProtectedRoute>} />
           <Route path="quick-attendance" element={<ProtectedRoute role="teacher"><TeacherQuickAttendance /></ProtectedRoute>} />
         </Route>
-        
-        {/* Admin Routes */}
+          {/* Admin Routes */}
         <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/students" element={<ProtectedRoute role="admin"><AdminStudentsPage /></ProtectedRoute>} />
+        <Route path="/admin/teachers" element={<ProtectedRoute role="admin"><AdminTeachersPage /></ProtectedRoute>} />
         <Route path="/admin/classes" element={<ProtectedRoute role="admin"><AdminClassesPage /></ProtectedRoute>} />
         <Route path="/admin/rooms" element={<ProtectedRoute role="admin"><AdminRoomsPage /></ProtectedRoute>} />
         <Route path="/admin/schedules" element={<ProtectedRoute role="admin"><AdminSchedulesPage /></ProtectedRoute>} />
