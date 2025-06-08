@@ -28,8 +28,7 @@ switch ($action) {
         if ($_SESSION['role'] !== 'admin') {
             Response::json(["error" => "Unauthorized"], 403);
             exit;
-        }
-        $stmt = $conn->query("SELECT student_id, full_name, class, rfid_uid FROM students");
+        }        $stmt = $conn->query("SELECT student_id, full_name, class, email, phone, rfid_uid FROM students");
         $students = $stmt->fetch_all(MYSQLI_ASSOC);
         Response::json(["success" => true, "students" => $students]);
         break;
