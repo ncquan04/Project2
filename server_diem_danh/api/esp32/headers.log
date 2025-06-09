@@ -1,0 +1,12 @@
+Array
+(
+    [content-type] => application/json
+    [user-agent] => PostmanRuntime/7.39.1
+    [accept] => */*
+    [cache-control] => no-cache
+    [postman-token] => 6b837ad3-e9ce-44ef-9499-b6a5d2c41b26
+    [host] => localhost
+    [accept-encoding] => gzip, deflate, br
+    [connection] => keep-alive
+    [content-length] => 52
+)

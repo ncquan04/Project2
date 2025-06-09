@@ -681,3 +681,27 @@
 [2025-06-09 15:01:30] Người dùng sv001 đăng nhập thành công
 [09-Jun-2025 15:01:30 Europe/Berlin] Starting session with cookies config: SameSite=Lax
 [09-Jun-2025 15:01:30 Europe/Berlin] Session started: oq3kmjepovgp4pldsja11rr586, Role: none
+[09-Jun-2025 15:07:04 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:07:04 Europe/Berlin] Session started: cim8hgnsrtngvgl02ftmmnf74r, Role: student
+[2025-06-09 15:07:08] Người dùng admin đăng nhập thành công
+[09-Jun-2025 15:07:08 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:07:08 Europe/Berlin] Session started: sguebgtcr1kthdh3qr329sea4u, Role: none
+[09-Jun-2025 15:09:12 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:09:12 Europe/Berlin] Session started: 9205m7tsr89jg26qjbblfp13fi, Role: admin
+[2025-06-09 15:09:16] Người dùng sv001 đăng nhập thành công
+[09-Jun-2025 15:09:16 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:09:16 Europe/Berlin] Session started: u3jnq1ecohunmf7mbsofa2ulhs, Role: none
+[09-Jun-2025 15:32:15 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:32:15 Europe/Berlin] Session started: 96srn90o08qv1dqqraonmv6rn3, Role: student
+[2025-06-09 15:32:18] Người dùng admin đăng nhập thành công
+[09-Jun-2025 15:32:18 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:32:18 Europe/Berlin] Session started: nf6469ltamb1kn1dd6cvked22c, Role: none
+[09-Jun-2025 15:33:30 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:33:30 Europe/Berlin] Session started: 20n87s1o2qkiuk7602g2hem79g, Role: admin
+[2025-06-09 15:33:35] Login failed for username: sv999 - Password mismatch
+[2025-06-09 15:38:17] Người dùng SV999 đăng nhập thành công
+[09-Jun-2025 15:38:17 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:38:17 Europe/Berlin] Session started: umjrq1qvbh2pe4f8sk4ludq3jc, Role: none
+[2025-06-09 15:38:38] Người dùng SV999 đăng nhập thành công
+[09-Jun-2025 15:38:38 Europe/Berlin] Starting session with cookies config: SameSite=Lax
+[09-Jun-2025 15:38:38 Europe/Berlin] Session started: u8t7nh3inskhdr8cjofv5vcdve, Role: student
