@@ -22,7 +22,63 @@ export interface ClassInfoDetail extends ClassInfo {
   end_date: string;
 }
 
-// Định nghĩa kiểu dữ liệu cho thông tin buổi học
+// Định nghĩa kiểu dữ liệu cho dữ liệu điểm danh theo ngày
+export interface AttendanceInfo {
+  status: string;
+  status_text: string;
+  class_date: string;
+  formatted_date: string;
+}
+
+// Định nghĩa kiểu dữ liệu cho ngày học
+export interface ClassDate {
+  date: string;
+  formatted_date: string;
+  attendance: AttendanceInfo;
+}
+
+// Định nghĩa kiểu dữ liệu cho tuần học
+export interface WeekAttendance {
+  week_number: string;
+  year_week: string;
+  dates: ClassDate[];
+}
+
+// Định nghĩa kiểu dữ liệu cho thống kê điểm danh
+export interface AttendanceStatistics {
+  total_sessions: number;
+  attended_sessions: number;
+  last_updated: string;
+  attendance_rate: number;
+}
+
+// Định nghĩa kiểu dữ liệu cho thông tin lớp học từ API mới
+export interface ClassDetailInfo {
+  class_id: number;
+  class_code: string;
+  room: string;
+  semester: string;
+  course_name: string;
+  course_code: string;
+  schedule_day: string;
+  start_time: string;
+  end_time: string;
+  start_date: string;
+  end_date: string;
+  teacher_name: string;
+  schedule_day_vi: string;
+  formatted_time: string;
+}
+
+// Định nghĩa kiểu dữ liệu cho response từ API điểm danh mới
+export interface NewAttendanceResponse {
+  success: boolean;
+  class: ClassDetailInfo;
+  statistics: AttendanceStatistics;
+  attendance: WeekAttendance[];
+}
+
+// Giữ lại interfaces cũ để tương thích ngược
 export interface SessionInfo {
   session_id: number;
   class_id: number;
@@ -33,7 +89,6 @@ export interface SessionInfo {
   notes?: string;
 }
 
-// Định nghĩa kiểu dữ liệu cho thống kê điểm danh
 export interface AttendanceSummary {
   total_sessions: number;
   attended: number;
@@ -41,7 +96,6 @@ export interface AttendanceSummary {
   attendance_rate: number;
 }
 
-// Định nghĩa kiểu dữ liệu chi tiết lớp học kèm thông tin điểm danh
 export interface ClassDetail {
   class_info: ClassInfoDetail;
   attendance_summary: AttendanceSummary;
@@ -54,7 +108,7 @@ interface ClassResponse {
   classes?: ClassInfo[];
 }
 
-// Định nghĩa kiểu dữ liệu cho response từ API điểm danh
+// Định nghĩa kiểu dữ liệu cho response từ API điểm danh cũ
 interface AttendanceResponse {
   success: boolean;
   message: string;
@@ -176,12 +230,51 @@ export const getClassDetails = async (classId: number): Promise<ClassInfo | null
 };
 
 /**
- * Hàm lấy thông tin điểm danh của một sinh viên trong một lớp học cụ thể
+ * Hàm lấy thông tin điểm danh của một sinh viên trong một lớp học cụ thể (API mới)
+ * @param classId ID của lớp học
+ * @param studentId Mã sinh viên
+ * @returns Promise<{classInfo: ClassDetailInfo, statistics: AttendanceStatistics, attendance: WeekAttendance[]}>
+ */
+export const getClassAttendance = async (
+  classId: string, 
+  studentId: string
+): Promise<{classInfo: ClassDetailInfo, statistics: AttendanceStatistics, attendance: WeekAttendance[]}> => {
+  try {
+    const response = await fetch(`${API_URL}/student/classAttendance.php?class_id=${classId}&student_id=${studentId}`, {
+      method: 'GET',
+      credentials: 'include', // Cho phép gửi và nhận cookies
+    });
+
+    if (!response.ok) {
+      console.error('Server response not OK:', response.status, response.statusText);
+      throw new Error(`Server returned ${response.status}`);
+    }
+
+    const data: NewAttendanceResponse = await response.json();
+    console.log('Raw API response (getClassAttendance):', data);
+    
+    if (data.success) {
+      return {
+        classInfo: data.class,
+        statistics: data.statistics,
+        attendance: data.attendance
+      };
+    }
+    
+    throw new Error('Failed to get attendance data');
+  } catch (error) {
+    console.error('Error fetching class attendance:', error);
+    throw error;
+  }
+};
+
+/**
+ * Hàm lấy thông tin điểm danh của một sinh viên trong một lớp học cụ thể (API cũ - giữ lại cho tương thích)
  * @param classId ID của lớp học
  * @param studentId Mã sinh viên
  * @returns Promise<{class_details: ClassDetail, sessions: SessionInfo[]}>
  */
-export const getClassAttendance = async (
+export const getClassAttendanceOld = async (
   classId: string, 
   studentId: string
 ): Promise<{class_details: ClassDetail, sessions: SessionInfo[]}> => {
@@ -197,7 +290,7 @@ export const getClassAttendance = async (
     }
 
     const data: AttendanceResponse = await response.json();
-    console.log('Raw API response (getClassAttendance):', data);
+    console.log('Raw API response (getClassAttendanceOld):', data);
     
     if (data.success) {
       return {
