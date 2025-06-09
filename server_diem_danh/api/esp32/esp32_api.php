@@ -1,12 +1,29 @@
 <?php
 header('Content-Type: application/json');
-include_once '../../config/config.php';
+require_once '../../config/config.php';
 
-// Thiết lập header cho API
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+function removeVietnameseTones($str) {
+    $str = preg_replace([
+        "/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/",
+        "/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/",
+        "/(ì|í|ị|ỉ|ĩ)/",
+        "/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/",
+        "/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/",
+        "/(ỳ|ý|ỵ|ỷ|ỹ)/",
+        "/(đ)/",
+        "/(À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ)/",
+        "/(È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ)/",
+        "/(Ì|Í|Ị|Ỉ|Ĩ)/",
+        "/(Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ)/",
+        "/(Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ)/",
+        "/(Ỳ|Ý|Ỵ|Ỷ|Ỹ)/",
+        "/(Đ)/"
+    ], [
+        "a", "e", "i", "o", "u", "y", "d",
+        "A", "E", "I", "O", "U", "Y", "D"
+    ], $str);
+    return $str;
+}
 
 // Nhận dữ liệu từ ESP32
 $data = json_decode(file_get_contents('php://input'), true);
@@ -26,13 +43,14 @@ try {
     $result = $stmt->get_result();
     
     if ($result->num_rows === 0) {
-        echo json_encode(value: ['error' => 'Student not found']);
+        echo json_encode(['error' => 'Student not found']);
         exit;
     }
     
     $student = $result->fetch_assoc();
     $student_id = $student['student_id'];
     $full_name = $student['full_name'];
+    $full_name_no_tone = removeVietnameseTones($full_name);
     
     // Lấy thời gian hiện tại
     $current_time = date('Y-m-d H:i:s');
@@ -54,7 +72,7 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
     
-    $status = 'invalid';
+    $status = 'absent';
     $notes = 'Không hợp lệ';
     $class_id = null;
     
@@ -112,7 +130,7 @@ try {
     
     // Trả về kết quả
     echo json_encode([
-        'full_name' => $full_name,
+        'full_name' => $full_name_no_tone,
         'student_id' => $student_id,
         'status' => $status
     ]);
