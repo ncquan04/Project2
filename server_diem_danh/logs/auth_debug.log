@@ -1242,3 +1242,374 @@ password_verify result: TRUE
     [student_id] => SV999
 )
 
+2025-06-09 15:43:15 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 15:43:15 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749476595
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 15:43:23 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 15:43:23 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749476603
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 15:50:29 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$yRNksrjPLxrzvDWp8lZDO.W...
+password_verify result: TRUE
+2025-06-09 15:50:29 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749477029
+    [ip] => ::1
+)
+
+2025-06-09 15:51:00 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 15:51:01 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749477061
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 15:51:41 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 15:51:41 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749477101
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 16:06:29 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$yRNksrjPLxrzvDWp8lZDO.W...
+password_verify result: TRUE
+2025-06-09 16:06:29 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749477989
+    [ip] => ::1
+)
+
+2025-06-09 16:07:59 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 16:07:59 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749478079
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 21:22:34 - Login attempt for: vananh
+User found: vananh - Stored password hash: $2y$10$fVSskqXwGl294bbOo0oa/OU...
+password_verify result: TRUE
+2025-06-09 21:22:34 - Session data after setUser: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749478954
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+2025-06-09 23:14:09 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$yRNksrjPLxrzvDWp8lZDO.W...
+password_verify result: TRUE
+2025-06-09 23:14:09 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749485649
+    [ip] => ::1
+)
+
+2025-06-09 23:17:53 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 23:17:53 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749485873
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 23:18:24 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 23:18:24 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749485904
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 23:29:17 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 23:29:17 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749486557
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 23:41:28 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 23:41:28 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749487288
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 23:41:53 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 23:41:53 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749487313
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-09 23:48:15 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$yRNksrjPLxrzvDWp8lZDO.W...
+password_verify result: TRUE
+2025-06-09 23:48:15 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749487695
+    [ip] => ::1
+)
+
+2025-06-09 23:48:34 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$yRNksrjPLxrzvDWp8lZDO.W...
+password_verify result: TRUE
+2025-06-09 23:48:34 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749487714
+    [ip] => ::1
+)
+
+2025-06-09 23:50:01 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-09 23:50:01 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749487801
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-10 00:01:47 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-10 00:01:47 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749488507
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-10 00:17:25 - Login attempt for: vananh
+User found: vananh - Stored password hash: $2y$10$fVSskqXwGl294bbOo0oa/OU...
+password_verify result: TRUE
+2025-06-10 00:17:25 - Session data after setUser: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749489445
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+2025-06-10 00:17:41 - Login attempt for: vananh
+User found: vananh - Stored password hash: $2y$10$fVSskqXwGl294bbOo0oa/OU...
+password_verify result: TRUE
+2025-06-10 00:17:41 - Session data after setUser: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749489461
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+2025-06-10 07:45:36 - Login attempt for: sv001
+User found: sv001 - Stored password hash: $2y$10$cvvOXhEvkHjLD3y67Fhg7Ox...
+password_verify result: TRUE
+2025-06-10 07:45:36 - Session data after setUser: Array
+(
+    [user_id] => 1
+    [username] => sv001
+    [role] => student
+    [last_activity] => 1749516336
+    [ip] => 127.0.0.1
+    [student_id] => SV001
+)
+
+2025-06-10 07:46:04 - Login attempt for: sv999
+User found: sv999 - Stored password hash: $2y$10$7BDbQBjQXvRVKsoW4scmBO4...
+password_verify result: TRUE
+2025-06-10 07:46:04 - Session data after setUser: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749516364
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+2025-06-10 08:32:24 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$yRNksrjPLxrzvDWp8lZDO.W...
+password_verify result: TRUE
+2025-06-10 08:32:24 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749519144
+    [ip] => ::1
+)
+
+2025-06-10 08:34:53 - Login attempt for: 20225161
+User found: 20225161 - Stored password hash: $2y$10$CUpv0smxsPglRo6dN9KL7eF...
+password_verify result: FALSE
+2025-06-10 08:35:39 - Login attempt for: 20225161
+User found: 20225161 - Stored password hash: $2y$10$BHd3PPOyPvJ52zRVbgrNg.9...
+password_verify result: TRUE
+2025-06-10 08:35:39 - Session data after setUser: Array
+(
+    [user_id] => 35
+    [username] => 20225161
+    [role] => student
+    [last_activity] => 1749519339
+    [ip] => ::1
+    [student_id] => 20225161
+)
+
+2025-06-10 08:37:20 - Login attempt for: vananh
+User found: vananh - Stored password hash: $2y$10$LWE/2eCm0PWqWG/wJgkbQOQ...
+password_verify result: TRUE
+2025-06-10 08:37:20 - Session data after setUser: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749519440
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+2025-06-10 08:40:01 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$XE0W/NsfNu41rNGKVVQRuO2...
+password_verify result: TRUE
+2025-06-10 08:40:01 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749519601
+    [ip] => ::1
+)
+
+2025-06-10 08:52:30 - Login attempt for: 123
+User found: 123 - Stored password hash: $2y$10$n6hxezgoI3DRiUC2EaJ2hOK...
+password_verify result: TRUE
+2025-06-10 08:52:30 - Session data after setUser: Array
+(
+    [user_id] => 37
+    [username] => 123
+    [role] => student
+    [last_activity] => 1749520350
+    [ip] => ::1
+    [student_id] => 123
+)
+
+2025-06-10 08:52:36 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$XE0W/NsfNu41rNGKVVQRuO2...
+password_verify result: TRUE
+2025-06-10 08:52:36 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749520356
+    [ip] => ::1
+)
+
+2025-06-10 09:33:38 - Login attempt for: admin
+User found: admin - Stored password hash: $2y$10$XE0W/NsfNu41rNGKVVQRuO2...
+password_verify result: TRUE
+2025-06-10 09:33:38 - Session data after setUser: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749522818
+    [ip] => ::1
+)
+

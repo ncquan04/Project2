@@ -63,9 +63,8 @@ switch ($action) {
             $stmt = $conn->prepare("INSERT INTO students (student_id, full_name, class, rfid_uid) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $data['student_id'], $data['full_name'], $data['class'], $rfid_uid);
             $stmt->execute();
-            
-            // Create user account for student
-            $password_hash = password_hash($data['student_id'], PASSWORD_BCRYPT);
+              // Create user account for student
+            $password_hash = password_hash('admin123', PASSWORD_BCRYPT);
             $stmt = $conn->prepare("INSERT INTO users (username, password, role, student_id) VALUES (?, ?, 'student', ?)");
             $stmt->bind_param("sss", $data['student_id'], $password_hash, $data['student_id']);
             $stmt->execute();

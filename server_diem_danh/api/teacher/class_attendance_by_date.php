@@ -71,10 +71,9 @@ try {
         ], 403);
         exit;
     }
+      $classInfo = $checkResult->fetch_assoc();
     
-    $classInfo = $checkResult->fetch_assoc();
-    
-    // Lấy danh sách sinh viên trong lớp, đồng thời lấy tên lớp từ bảng classescd
+    // BƯỚC 1: Lấy danh sách sinh viên trong lớp học
     $studentsStmt = $conn->prepare("SELECT s.student_id, s.full_name, cl.class_code AS student_class, s.rfid_uid 
                                    FROM students s 
                                    JOIN student_classes sc ON s.student_id = sc.student_id 
@@ -86,64 +85,165 @@ try {
     $studentsResult = $studentsStmt->get_result();
     
     $students = [];
+    $studentIds = []; // Để lưu danh sách student_id
     while ($row = $studentsResult->fetch_assoc()) {
         $students[] = $row;
+        $studentIds[] = $row['student_id'];
     }
     
-    // Lấy dữ liệu điểm danh cho ngày được chọn
-    // Xác định khoảng thời gian hợp lệ cho buổi học (ví dụ: từ 1 tiếng trước đến 3 tiếng sau giờ bắt đầu)
+    // BƯỚC 2: Xác định thời gian bắt đầu lớp học và khung thời gian hợp lệ
     $classStartTime = $date . ' ' . $classInfo['start_time'];
-    $startWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' -1 hour'));
-    $endWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' +3 hour'));
-
-    // Sửa: lấy cả attendance_id và sắp xếp checkin_time DESC để lấy bản ghi mới nhất trước
-    $attendanceQuery = "SELECT a.attendance_id, a.student_id, a.checkin_time, a.notes, a.verified, a.status
-                       FROM attendance a
-                       WHERE a.room = ?
-                         AND a.course_id = ?
-                         AND a.checkin_time >= ?
-                         AND a.checkin_time <= ?
-                       ORDER BY a.student_id ASC, a.checkin_time DESC";
-    $attendanceStmt = $conn->prepare($attendanceQuery);
-    $attendanceStmt->bind_param("ssss", $classInfo['room'], $classInfo['course_id'], $startWindow, $endWindow);
-    $attendanceStmt->execute();
-    $attendanceResult = $attendanceStmt->get_result();
-
-    // Tổ chức dữ liệu điểm danh: lấy bản ghi mới nhất cho mỗi student_id
+    $startWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' -60 minutes'));
+    $endWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' +30 minutes'));
+    
+    $classStartDateTime = new DateTime($classStartTime);
+    $endWindowDateTime = new DateTime($endWindow);
+    $startWindowDateTime = new DateTime($startWindow);
+    
+    // BƯỚC 3: Tìm kiếm thông tin điểm danh của các sinh viên trong ngày đã chọn
     $attendanceData = [];
-    while ($attendance = $attendanceResult->fetch_assoc()) {
-        $studentId = $attendance['student_id'];
-        if (!isset($attendanceData[$studentId])) {
-            $attendanceData[$studentId] = [
-                'attendance_id' => $attendance['attendance_id'],
-                'status' => $attendance['status'] ?? 'present',
-                'check_in_time' => $attendance['checkin_time'],
-                'notes' => $attendance['notes'],
-                'verified' => $attendance['verified']
-            ];
+    $debugAttendanceDetails = [];
+    $debugQueries = []; // Debug thông tin queries
+    
+    if (count($studentIds) > 0) {
+        // Tạo placeholders cho IN clause
+        $placeholders = str_repeat('?,', count($studentIds) - 1) . '?';
+        
+        // Query tìm tất cả bản ghi điểm danh của sinh viên trong khung thời gian
+        $attendanceQuery = "SELECT a.attendance_id, a.student_id, a.checkin_time, a.notes, a.verified, a.status, 
+                                  a.room, a.course_id
+                           FROM attendance a
+                           WHERE a.student_id IN ($placeholders)
+                             AND DATE(a.checkin_time) = ?
+                           ORDER BY a.student_id ASC, a.checkin_time DESC";
+        
+        $attendanceStmt = $conn->prepare($attendanceQuery);
+        if (!$attendanceStmt) {
+            throw new Exception("Prepare attendance statement failed: " . $conn->error);
         }
-    }
-
-    // Thêm thông tin điểm danh vào danh sách sinh viên
+          // Bind parameters: student_ids + date
+        $types = str_repeat('i', count($studentIds)) . 's';
+        $params = array_merge($studentIds, [$date]);
+        $attendanceStmt->bind_param($types, ...$params);
+        $attendanceStmt->execute();
+        $attendanceResult = $attendanceStmt->get_result();
+          // Debug info về query
+        $debugQueries[] = [
+            'query_type' => 'find_attendance_by_students_and_date',
+            'student_count' => count($studentIds),
+            'student_ids' => $studentIds,
+            'date' => $date,
+            'query' => $attendanceQuery,
+            'bind_types' => $types,
+            'found_records' => $attendanceResult->num_rows
+        ];
+        
+        // BƯỚC 4: Xử lý từng bản ghi điểm danh và đối chiếu với thời gian lớp học
+        while ($attendance = $attendanceResult->fetch_assoc()) {
+            $studentId = $attendance['student_id'];
+            
+            // Chỉ lấy bản ghi đầu tiên (mới nhất) cho mỗi sinh viên
+            if (!isset($attendanceData[$studentId])) {
+                $checkinDateTime = new DateTime($attendance['checkin_time']);
+                
+                // Kiểm tra xem bản ghi có trong khung thời gian hợp lệ không
+                $isInTimeWindow = ($checkinDateTime >= $startWindowDateTime && $checkinDateTime <= $endWindowDateTime);
+                
+                if ($isInTimeWindow) {
+                    // Tính toán trạng thái dựa trên thời gian so với giờ bắt đầu lớp
+                    $minutesDiff = round(($checkinDateTime->getTimestamp() - $classStartDateTime->getTimestamp()) / 60);
+                    $calculatedStatus = 'absent'; // Mặc định
+                    
+                    // Logic đối chiếu thời gian:
+                    // - Có mặt: điểm danh trước hoặc đúng giờ bắt đầu lớp
+                    // - Đi muộn: điểm danh sau giờ bắt đầu lớp nhưng trong khung thời gian cho phép
+                    if ($checkinDateTime <= $classStartDateTime) {
+                        $calculatedStatus = 'present';
+                    } else if ($checkinDateTime <= $endWindowDateTime) {
+                        $calculatedStatus = 'late';
+                    }
+                    
+                    // Lưu thông tin debug
+                    $debugAttendanceDetails[$studentId] = [
+                        'checkin_time' => $attendance['checkin_time'],
+                        'class_start_time' => $classStartDateTime->format('Y-m-d H:i:s'),
+                        'minutes_difference' => $minutesDiff,
+                        'is_in_time_window' => $isInTimeWindow,
+                        'is_before_class_start' => ($checkinDateTime <= $classStartDateTime),
+                        'calculated_status' => $calculatedStatus,
+                        'original_status' => $attendance['status'],
+                        'room_matched' => ($attendance['room'] === $classInfo['room']),
+                        'course_matched' => ($attendance['course_id'] == $classInfo['course_id'])
+                    ];
+                    
+                    $attendanceData[$studentId] = [
+                        'attendance_id' => $attendance['attendance_id'],
+                        'status' => $calculatedStatus,
+                        'check_in_time' => $attendance['checkin_time'],
+                        'notes' => $attendance['notes'],
+                        'verified' => $attendance['verified'],
+                        'original_status' => $attendance['status'],
+                        'minutes_difference' => $minutesDiff
+                    ];
+                } else {
+                    // Bản ghi ngoài khung thời gian hợp lệ
+                    $debugAttendanceDetails[$studentId] = [
+                        'checkin_time' => $attendance['checkin_time'],
+                        'class_start_time' => $classStartDateTime->format('Y-m-d H:i:s'),
+                        'is_in_time_window' => false,
+                        'calculated_status' => 'out_of_time_window',
+                        'original_status' => $attendance['status']
+                    ];
+                }
+            }
+        }
+        
+        if (isset($attendanceStmt)) $attendanceStmt->close();
+    }// Thêm thông tin điểm danh vào danh sách sinh viên
     foreach ($students as &$student) {
         $studentId = $student['student_id'];
         if (isset($attendanceData[$studentId])) {
             $student['attendance'] = $attendanceData[$studentId];
         } else {
+            // Sinh viên không có bản ghi điểm danh = vắng mặt
             $student['attendance'] = [
                 'attendance_id' => null,
                 'status' => 'absent',
                 'check_in_time' => null,
                 'notes' => null,
-                'verified' => 0
+                'verified' => 0,
+                'original_status' => null
             ];
         }
-    }
-    
-    Response::json([
+    }    Response::json([
         "success" => true,
         "date" => $date,
         "class" => $classInfo,
+        "class_start_time" => $classInfo['start_time'],
+        "time_window" => [
+            "start" => $startWindow,
+            "end" => $endWindow
+        ],        "debug_info" => [
+            "attendance_rules" => [
+                "present_window" => "60 phút trước giờ bắt đầu đến đúng giờ bắt đầu",
+                "late_window" => "Sau giờ bắt đầu đến " . round(($endWindowDateTime->getTimestamp() - $classStartDateTime->getTimestamp()) / 60) . " phút sau",
+                "absent_cases" => "Không có bản ghi hoặc quá " . round(($endWindowDateTime->getTimestamp() - $classStartDateTime->getTimestamp()) / 60) . " phút sau giờ bắt đầu"
+            ],
+            "time_calculations" => [
+                "class_start_datetime" => $classStartTime,
+                "valid_checkin_start" => $startWindow . " (thời gian sớm nhất được phép điểm danh)",
+                "valid_checkin_end" => $endWindow . " (thời gian muộn nhất được phép điểm danh)",
+                "present_until" => $classStartTime . " (giờ bắt đầu lớp - giới hạn 'có mặt')",
+                "late_until" => $endWindow . " (giới hạn 'đi muộn')",
+                "window_duration_minutes" => round(($endWindowDateTime->getTimestamp() - $startWindowDateTime->getTimestamp()) / 60)
+            ],            "statistics" => [
+                "total_students" => count($students),
+                "attendance_found" => count($attendanceData),
+                "students_absent" => count($students) - count($attendanceData)
+            ],
+            "queries" => $debugQueries,
+            "attendance_details" => $debugAttendanceDetails
+        ],
         "students" => $students
     ], 200);
 

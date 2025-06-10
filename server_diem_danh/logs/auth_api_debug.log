@@ -6347,3 +6347,1674 @@ Response headers: Array
     [13] => Content-Type: application/json
 )
 
+2025-06-09 15:43:15 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=7qurqp8ogoedtgndlrs38lk724
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: q63v88vhjq4tfhp2p0tmro3j1p
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749476595
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=q63v88vhjq4tfhp2p0tmro3j1p; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:43:19 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=q63v88vhjq4tfhp2p0tmro3j1p
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749476595
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:43:23 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: kcse2la7p2sbrknps8sivra2j4
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749476603
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=kcse2la7p2sbrknps8sivra2j4; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:50:25 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=kcse2la7p2sbrknps8sivra2j4
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749476603
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:50:29 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: 7rijlce703rjbhqht1gli168fg
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749477029
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=7rijlce703rjbhqht1gli168fg; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:50:55 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=7rijlce703rjbhqht1gli168fg
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749477029
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:51:00 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: j7571a2k8jm5as3b1vduvu1ksm
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749477061
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=j7571a2k8jm5as3b1vduvu1ksm; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 15:51:41 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=j7571a2k8jm5as3b1vduvu1ksm
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: f91iashecusgia03n40e5as114
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749477101
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=f91iashecusgia03n40e5as114; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 16:06:25 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=f91iashecusgia03n40e5as114
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749477101
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 16:06:29 - Request received
+2025-06-09 16:06:29 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: kecjbcqqhg90m60e424uppfrmv
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749477989
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=kecjbcqqhg90m60e424uppfrmv; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 16:07:51 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=kecjbcqqhg90m60e424uppfrmv
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749477989
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 16:07:59 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: frbrbli6ehso98hhsbmbph0kmu
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749478079
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=frbrbli6ehso98hhsbmbph0kmu; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 21:22:29 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=frbrbli6ehso98hhsbmbph0kmu
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749478079
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 21:22:34 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"vananh","password":"admin123"}
+Username: vananh
+Login successful for username: vananh
+Session started, ID: nkcl74u9kbd2fl18jojjkvokrq
+Session data: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749478954
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=nkcl74u9kbd2fl18jojjkvokrq; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:14:09 - Request received
+2025-06-09 23:14:09 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=m7q6m64oktt0p2cl68btjaen42
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: 0ft95qafqc13dcfhp2cumm0hfo
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749485649
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=0ft95qafqc13dcfhp2cumm0hfo; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:15:58 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=0ft95qafqc13dcfhp2cumm0hfo
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749485649
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:17:53 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: mlqjpvmmv0grqo12hfv3p9humb
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749485873
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=mlqjpvmmv0grqo12hfv3p9humb; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:18:24 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=mlqjpvmmv0grqo12hfv3p9humb
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: u5iiffneb5hv234or09fas14g4
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749485904
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=u5iiffneb5hv234or09fas14g4; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:29:17 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=u5iiffneb5hv234or09fas14g4
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: lh6mk7hpgrdrfj7p543ssr38j0
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749486557
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=lh6mk7hpgrdrfj7p543ssr38j0; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:41:28 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=lh6mk7hpgrdrfj7p543ssr38j0
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: 4bbfmt5drkijd6nog95p5fe10h
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749487288
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=4bbfmt5drkijd6nog95p5fe10h; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:41:53 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=4bbfmt5drkijd6nog95p5fe10h
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: kp13sasjkv5cmulbuv5l8oebu3
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749487313
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=kp13sasjkv5cmulbuv5l8oebu3; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:48:15 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=kp13sasjkv5cmulbuv5l8oebu3
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: qm35vng0ai2mg9bh00nuslpfgq
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749487695
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=qm35vng0ai2mg9bh00nuslpfgq; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:48:34 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=qm35vng0ai2mg9bh00nuslpfgq
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: i3kjneha1fo8epnv0d9v5kbhou
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749487714
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=i3kjneha1fo8epnv0d9v5kbhou; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:49:56 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=i3kjneha1fo8epnv0d9v5kbhou
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749487714
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-09 23:50:01 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: bjj90h6bafbsqjmbi59glk3vet
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749487801
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=bjj90h6bafbsqjmbi59glk3vet; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 00:01:47 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=bjj90h6bafbsqjmbi59glk3vet
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: a5ggshhll2dl8h87lianq81lcf
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749488507
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=a5ggshhll2dl8h87lianq81lcf; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 00:17:25 - Request received
+2025-06-10 00:17:25 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=a5ggshhll2dl8h87lianq81lcf
+Action: login
+Raw input: {"username":"vananh","password":"admin123"}
+Username: vananh
+Login successful for username: vananh
+Session started, ID: hjist50l5dmiuuv1c8t3ste3m7
+Session data: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749489445
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=hjist50l5dmiuuv1c8t3ste3m7; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 00:17:41 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=hjist50l5dmiuuv1c8t3ste3m7
+Action: login
+Raw input: {"username":"vananh","password":"admin123"}
+Username: vananh
+Login successful for username: vananh
+Session started, ID: urbso8hoirqi3vvqfcfdcbqsi6
+Session data: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749489461
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=urbso8hoirqi3vvqfcfdcbqsi6; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 07:45:36 - Request received
+2025-06-10 07:45:36 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=03476kq4i2lfi2ioseb2hv8284
+Action: login
+Raw input: {"username":"sv001","password":"admin123"}
+Username: sv001
+Login successful for username: sv001
+Session started, ID: cs0o0eer5l62ru9t8ks5jbtjs3
+Session data: Array
+(
+    [user_id] => 1
+    [username] => sv001
+    [role] => student
+    [last_activity] => 1749516336
+    [ip] => 127.0.0.1
+    [student_id] => SV001
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=cs0o0eer5l62ru9t8ks5jbtjs3; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 07:45:59 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=cs0o0eer5l62ru9t8ks5jbtjs3
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 1
+    [username] => sv001
+    [role] => student
+    [last_activity] => 1749516336
+    [ip] => 127.0.0.1
+    [student_id] => SV001
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 07:46:04 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"sv999","password":"admin123"}
+Username: sv999
+Login successful for username: sv999
+Session started, ID: sj3p9mt1clmh34d5birbmj48nh
+Session data: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749516364
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=sj3p9mt1clmh34d5birbmj48nh; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:32:20 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=sj3p9mt1clmh34d5birbmj48nh
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 33
+    [username] => SV999
+    [role] => student
+    [last_activity] => 1749516364
+    [ip] => ::1
+    [student_id] => SV999
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:32:24 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: ut4rfjf92bvf4n06vnf7r94h34
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749519144
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=ut4rfjf92bvf4n06vnf7r94h34; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:34:36 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=ut4rfjf92bvf4n06vnf7r94h34
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749519144
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:34:53 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"20225161 ","password":"admin123"}
+Username: 20225161
+Login failed for username: 20225161
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Content-Type: application/json
+)
+
+2025-06-10 08:35:39 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: PHPSESSID=d1hi2ko60avl4ecd324rb09mqr
+Action: login
+Raw input: {"username":"20225161 ","password":"admin123"}
+Username: 20225161
+Login successful for username: 20225161
+Session started, ID: rso7rscqdss10c4onhuo8f7ifr
+Session data: Array
+(
+    [user_id] => 35
+    [username] => 20225161
+    [role] => student
+    [last_activity] => 1749519339
+    [ip] => ::1
+    [student_id] => 20225161
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=rso7rscqdss10c4onhuo8f7ifr; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:37:15 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=rso7rscqdss10c4onhuo8f7ifr
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 35
+    [username] => 20225161
+    [role] => student
+    [last_activity] => 1749519339
+    [ip] => ::1
+    [student_id] => 20225161
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:37:20 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"vananh","password":"admin123"}
+Username: vananh
+Login successful for username: vananh
+Session started, ID: 9p39rtt2ucktce1g1hu95r6kos
+Session data: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749519440
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=9p39rtt2ucktce1g1hu95r6kos; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:39:43 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=9p39rtt2ucktce1g1hu95r6kos
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 16
+    [username] => vananh
+    [role] => teacher
+    [last_activity] => 1749519440
+    [ip] => ::1
+    [teacher_id] => 1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:40:01 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: 9ki188jjmml2rhaoavu2d5muj1
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749519601
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=9ki188jjmml2rhaoavu2d5muj1; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:52:26 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=9ki188jjmml2rhaoavu2d5muj1
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749519601
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:52:29 - Request received
+2025-06-10 08:52:30 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"123","password":"admin123"}
+Username: 123
+Login successful for username: 123
+Session started, ID: r65b62hf1ev86v3ppkq07p5pej
+Session data: Array
+(
+    [user_id] => 37
+    [username] => 123
+    [role] => student
+    [last_activity] => 1749520350
+    [ip] => ::1
+    [student_id] => 123
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=r65b62hf1ev86v3ppkq07p5pej; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:52:32 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: 
+Cookies: PHPSESSID=r65b62hf1ev86v3ppkq07p5pej
+Action: logout
+Logout request - Session before destroy: Array
+(
+    [user_id] => 37
+    [username] => 123
+    [role] => student
+    [last_activity] => 1749520350
+    [ip] => ::1
+    [student_id] => 123
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; Max-Age=0; path=/
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 08:52:36 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: e6pgcbt1fq372h0509jrs7inl7
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749520356
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=e6pgcbt1fq372h0509jrs7inl7; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+
+2025-06-10 09:33:38 - Request received
+2025-06-10 09:33:38 - Request received
+Request details:
+Origin: http://localhost:5173
+Method: POST
+Content-Type: application/json
+Cookies: 
+Action: login
+Raw input: {"username":"admin","password":"admin123"}
+Username: admin
+Login successful for username: admin
+Session started, ID: 3jfkqna4a9ta45p41ef0fo392u
+Session data: Array
+(
+    [user_id] => 23
+    [username] => admin
+    [role] => admin
+    [last_activity] => 1749522818
+    [ip] => ::1
+)
+
+Response headers: Array
+(
+    [0] => X-Powered-By: PHP/8.2.12
+    [1] => Access-Control-Allow-Origin: http://localhost:5173
+    [2] => Access-Control-Allow-Credentials: true
+    [3] => Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    [4] => Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie
+    [5] => Access-Control-Max-Age: 3600
+    [6] => X-Frame-Options: DENY
+    [7] => X-Content-Type-Options: nosniff
+    [8] => X-XSS-Protection: 1; mode=block
+    [9] => Expires: Thu, 19 Nov 1981 08:52:00 GMT
+    [10] => Cache-Control: no-store, no-cache, must-revalidate
+    [11] => Pragma: no-cache
+    [12] => Set-Cookie: PHPSESSID=3jfkqna4a9ta45p41ef0fo392u; path=/; SameSite=Lax
+    [13] => Content-Type: application/json
+)
+

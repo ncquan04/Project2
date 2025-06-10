@@ -4,6 +4,9 @@ require_once __DIR__ . '/../phpdotenv_lib/vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
+// Thiết lập múi giờ Việt Nam
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 // Tải file .env từ thư mục
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
@@ -34,3 +37,7 @@ if ($conn->connect_error) {
     echo json_encode(["error" => "Kết nối cơ sở dữ liệu thất bại"]);
     exit;
 }
+
+// Thiết lập charset và timezone cho MySQL
+$conn->set_charset("utf8mb4");
+$conn->query("SET time_zone = '+07:00'"); // Múi giờ Việt Nam (+7)

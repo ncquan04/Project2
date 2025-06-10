@@ -44,64 +44,164 @@ switch ($action) {
         $stmt->bind_param("s", $student_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $rooms = $result->fetch_all(MYSQLI_ASSOC);
+        $rooms = $result->fetch_all(MYSQLI_ASSOC);        
         $rooms = array_column($rooms, 'room');
-        Response::json(["success" => true, "rooms" => $rooms]);
+        Response::json(["success" => true, "student_id" => $student_id, "rooms" => $rooms]);
         $stmt->close();
         break;
-        
-    case 'get_attendance_history':
-        // Instead of complex query that might fail, use simpler demo data for development
+      case 'get_attendance_history':
         try {
-            // Demo data that matches the expected format
-            $records = [
-                [
-                    "id" => 1,
-                    "date" => date("Y-m-d"),
-                    "time" => "08:30",
-                    "class_name" => "Lập trình Web",
-                    "course_code" => "IT101",
-                    "teacher_name" => "Nguyễn Văn A",
-                    "status" => "present",
-                    "room" => "A303",
-                    "notes" => null
-                ],
-                [
-                    "id" => 2,
-                    "date" => date("Y-m-d"),
-                    "time" => "13:15",
-                    "class_name" => "Cơ sở dữ liệu",
-                    "course_code" => "IT102",
-                    "teacher_name" => "Trần Thị B",
-                    "status" => "late",
-                    "room" => "B201",
-                    "notes" => "Đi trễ 10 phút"
-                ],
-                [
-                    "id" => 3,
-                    "date" => date("Y-m-d", strtotime("-1 day")),
-                    "time" => "09:45",
-                    "class_name" => "Toán rời rạc",
-                    "course_code" => "MA101",
-                    "teacher_name" => "Lê Văn C",
-                    "status" => "absent",
-                    "room" => "C105",
-                    "notes" => "Không đi học"
-                ],
-                [
-                    "id" => 4,
-                    "date" => date("Y-m-d", strtotime("-2 days")),
-                    "time" => "07:30",
-                    "class_name" => "Lập trình hướng đối tượng",
-                    "course_code" => "IT201",
-                    "teacher_name" => "Phan Văn D",
-                    "status" => "present",
-                    "room" => "B105",
-                    "notes" => null
-                ]
-            ];
+            // Query để lấy lịch sử điểm danh với logic xác định trạng thái dựa trên lớp học
+            $query = "SELECT 
+                        a.attendance_id as id,
+                        DATE(a.checkin_time) as date,
+                        TIME(a.checkin_time) as time,
+                        a.checkin_time,
+                        a.room,
+                        a.notes,
+                        a.status as original_status,
+                        c.course_name as class_name,
+                        c.course_code,
+                        t.full_name as teacher_name,
+                        cl.start_time,
+                        cl.end_time,
+                        cl.schedule_day
+                      FROM attendance a
+                      LEFT JOIN courses c ON a.course_id = c.course_id
+                      LEFT JOIN classes cl ON a.course_id = cl.course_id AND a.room = cl.room
+                      LEFT JOIN teachers t ON cl.teacher_id = t.teacher_id
+                      WHERE a.student_id = ?
+                      ORDER BY a.checkin_time DESC
+                      LIMIT 50";
             
-            Response::json(["success" => true, "records" => $records]);
+            $stmt = $conn->prepare($query);
+            if (!$stmt) {
+                Response::json(["error" => "Database error", "details" => $conn->error], 500);
+                exit;
+            }
+            
+            $stmt->bind_param("s", $student_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            $records = [];
+            while ($row = $result->fetch_assoc()) {
+                $checkinTime = new DateTime($row['checkin_time']);
+                $checkinDate = $row['date'];
+                $checkinTimeOnly = $row['time'];
+                
+                // Xác định trạng thái điểm danh dựa trên logic mới
+                $finalStatus = 'present'; // Mặc định
+                $matchedClass = null;
+                
+                // Nếu không có thông tin lớp học từ attendance, tìm lớp học phù hợp
+                if (empty($row['class_name']) || empty($row['start_time'])) {
+                    // Lấy danh sách lớp học của sinh viên trong ngày điểm danh
+                    $classQuery = "SELECT 
+                                    c.course_name as class_name,
+                                    c.course_code,
+                                    t.full_name as teacher_name,
+                                    cl.start_time,
+                                    cl.end_time,
+                                    cl.schedule_day,
+                                    cl.room as class_room
+                                   FROM student_classes sc
+                                   JOIN classes cl ON sc.class_id = cl.class_id
+                                   JOIN courses c ON cl.course_id = c.course_id
+                                   JOIN teachers t ON cl.teacher_id = t.teacher_id
+                                   WHERE sc.student_id = ?
+                                   AND cl.schedule_day = ?
+                                   AND ? BETWEEN cl.start_date AND cl.end_date";
+                    
+                    $dayOfWeek = strtolower(date('l', strtotime($checkinDate)));
+                    
+                    $classStmt = $conn->prepare($classQuery);
+                    $classStmt->bind_param("sss", $student_id, $dayOfWeek, $checkinDate);
+                    $classStmt->execute();
+                    $classResult = $classStmt->get_result();
+                      $bestMatch = null;
+                    $minTimeDiff = 9999; // Khởi tạo với giá trị lớn
+                    
+                    while ($classRow = $classResult->fetch_assoc()) {
+                        $classStartTime = new DateTime($checkinDate . ' ' . $classRow['start_time']);
+                        $timeDiffMinutes = ($checkinTime->getTimestamp() - $classStartTime->getTimestamp()) / 60;
+                        $absTimeDiff = abs($timeDiffMinutes);
+                        
+                        // Chọn lớp học có thời gian bắt đầu gần nhất (trong khoảng 60 phút trước hoặc 30 phút sau)
+                        if (($timeDiffMinutes >= -60 && $timeDiffMinutes <= 30) && $absTimeDiff < $minTimeDiff) {
+                            $minTimeDiff = $absTimeDiff;
+                            $bestMatch = $classRow;
+                            $bestMatch['time_diff'] = $timeDiffMinutes;
+                        }
+                    }
+                    $classStmt->close();
+                      if ($bestMatch) {
+                        $matchedClass = $bestMatch;
+                        $classStartTime = new DateTime($checkinDate . ' ' . $bestMatch['start_time']);
+                        $timeDiffMinutes = $bestMatch['time_diff'];
+                        
+                        // Xác định trạng thái dựa trên thời gian điểm danh:
+                        // - Có mặt: điểm danh trong vòng 60 phút trước giờ học
+                        // - Đi muộn: điểm danh trong vòng 30 phút sau giờ học
+                        if ($timeDiffMinutes <= 0) {
+                            // Điểm danh trước giờ học
+                            $finalStatus = 'present';
+                        } elseif ($timeDiffMinutes <= 30) {
+                            // Điểm danh sau giờ học nhưng trong vòng 30 phút
+                            $finalStatus = 'late';
+                        } else {
+                            $finalStatus = 'unknown';
+                        }
+                    } else {
+                        // Không tìm thấy lớp học phù hợp
+                        $finalStatus = 'unknown';
+                    }
+                } else {
+                    // Đã có thông tin lớp học từ attendance
+                    $matchedClass = [
+                        'class_name' => $row['class_name'],
+                        'course_code' => $row['course_code'],
+                        'teacher_name' => $row['teacher_name'],
+                        'start_time' => $row['start_time']
+                    ];
+                      if ($row['start_time']) {
+                        $classStartTime = new DateTime($checkinDate . ' ' . $row['start_time']);
+                        $timeDiffMinutes = ($checkinTime->getTimestamp() - $classStartTime->getTimestamp()) / 60;
+                        
+                        // Xác định trạng thái dựa trên thời gian điểm danh:
+                        // - Có mặt: điểm danh trong vòng 60 phút trước giờ học
+                        // - Đi muộn: điểm danh trong vòng 30 phút sau giờ học
+                        if ($timeDiffMinutes <= 0) {
+                            // Điểm danh trước giờ học
+                            $finalStatus = 'present';
+                        } elseif ($timeDiffMinutes <= 30) {
+                            // Điểm danh sau giờ học nhưng trong vòng 30 phút
+                            $finalStatus = 'late';
+                        } else {
+                            $finalStatus = 'unknown';
+                        }
+                    }
+                }
+                
+                // Xử lý dữ liệu null và format
+                $records[] = [
+                    "id" => (int)$row['id'],
+                    "date" => $row['date'],
+                    "time" => $checkinTimeOnly,
+                    "class_name" => $matchedClass['class_name'] ?? 'Không xác định',
+                    "course_code" => $matchedClass['course_code'] ?? 'N/A',
+                    "teacher_name" => $matchedClass['teacher_name'] ?? 'Không xác định',
+                    "status" => $finalStatus,
+                    "original_status" => $row['original_status'],
+                    "room" => $row['room'],
+                    "notes" => $row['notes'],
+                    "class_start_time" => $matchedClass['start_time'] ?? null,
+                    "time_difference_minutes" => isset($matchedClass['time_diff']) ? round($matchedClass['time_diff']) : null
+                ];
+            }
+            
+            $stmt->close();
+            Response::json(["success" => true, "student_id" => $student_id, "records" => $records]);
         } catch (Exception $e) {
             Response::json(["error" => "Error fetching attendance history", "details" => $e->getMessage()], 500);
         }
@@ -145,11 +245,10 @@ switch ($action) {
             exit;
         }
         $stmt->bind_param($types, ...$params);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->execute();        $result = $stmt->get_result();
         $attendance = $result->fetch_all(MYSQLI_ASSOC);
 
-        Response::json(["success" => true, "attendance" => $attendance]);
+        Response::json(["success" => true, "student_id" => $student_id, "attendance" => $attendance]);
         $stmt->close();
         break;
 }

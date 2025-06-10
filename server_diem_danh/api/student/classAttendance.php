@@ -39,10 +39,9 @@ if ($checkResult->num_rows === 0) {
 }
 $checkClassStmt->close();
 
-try {
-    // Lấy thông tin lớp học
+try {    // Lấy thông tin lớp học
     $classQuery = "SELECT c.class_id, c.class_code, c.room, c.semester, 
-                       cs.course_name, cs.course_code,
+                       cs.course_name, cs.course_code, c.course_id,
                        c.schedule_day, c.start_time, c.end_time, 
                        c.start_date, c.end_date,
                        t.full_name AS teacher_name
@@ -94,64 +93,50 @@ try {
             'last_updated' => null
         ];
     }
-    $statsStmt->close();
-    
-    // Lấy chi tiết điểm danh theo từng buổi học
+    $statsStmt->close();    // Lấy chi tiết điểm danh theo từng buổi học - chỉ theo thời gian
     $attendanceQuery = "SELECT DATE(a.checkin_time) AS class_date,
                            a.checkin_time, a.verified, a.notes,
                            WEEK(a.checkin_time) AS week_number,
                            YEARWEEK(a.checkin_time) AS year_week
                        FROM attendance a
-                       JOIN classes c ON a.course_id = c.course_id AND a.room = c.room
-                       WHERE a.student_id = ? AND c.class_id = ?
+                       WHERE a.student_id = ?
                        ORDER BY a.checkin_time DESC";
     
     $attendanceStmt = $conn->prepare($attendanceQuery);
     if (!$attendanceStmt) {
         throw new Exception("Prepare statement failed: " . $conn->error);
     }
-    $attendanceStmt->bind_param("si", $student_id, $class_id);
+    $attendanceStmt->bind_param("s", $student_id);
     $attendanceStmt->execute();
-    $attendanceResult = $attendanceStmt->get_result();
+    $attendanceResult = $attendanceStmt->get_result();      $attendanceRecords = [];
+    $debugInfo = [
+        'total_records' => 0,
+        'all_attendance_records' => []
+    ];
     
-    $attendanceRecords = [];
     while ($record = $attendanceResult->fetch_assoc()) {
-        // Xác định trạng thái điểm danh (đúng giờ, muộn, vắng)
-        $checkInTime = new DateTime($record['checkin_time']);
+        $debugInfo['total_records']++;
         $classDate = $record['class_date'];
-        $weekDay = strtolower(date('l', strtotime($classDate)));
         
-        // Chỉ tính các ngày học trùng với lịch học của lớp
-        if ($weekDay === $classInfo['schedule_day']) {
-            $classStartTime = new DateTime($classDate . ' ' . $classInfo['start_time']);
-            
-            // Nếu điểm danh muộn 15 phút hoặc hơn, đánh dấu là late
-            $lateThreshold = clone $classStartTime;
-            $lateThreshold->add(new DateInterval('PT15M'));
-            
-            if ($checkInTime > $lateThreshold) {
-                $record['status'] = 'late';
-                $record['status_text'] = 'Đi trễ';
-            } else {
-                $record['status'] = 'present';
-                $record['status_text'] = 'Có mặt';
-            }
-            
-            $record['formatted_date'] = date('d/m/Y', strtotime($classDate));
-            $record['formatted_time'] = date('H:i:s', strtotime($record['checkin_time']));
-            
-            // Tạo key cho tuần học
-            $yearWeek = $record['year_week'];
-            if (!isset($attendanceRecords[$yearWeek])) {
-                $attendanceRecords[$yearWeek] = [
-                    'week_number' => $record['week_number'],
-                    'year_week' => $yearWeek,
-                    'records' => []
-                ];
-            }
-            
-            $attendanceRecords[$yearWeek]['records'][] = $record;
+        $debugInfo['all_attendance_records'][] = [
+            'class_date' => $classDate,
+            'checkin_time' => $record['checkin_time']
+        ];
+        
+        $record['formatted_date'] = date('d/m/Y', strtotime($classDate));
+        $record['formatted_time'] = date('H:i:s', strtotime($record['checkin_time']));
+        
+        // Tạo key cho tuần học
+        $yearWeek = $record['year_week'];
+        if (!isset($attendanceRecords[$yearWeek])) {
+            $attendanceRecords[$yearWeek] = [
+                'week_number' => $record['week_number'],
+                'year_week' => $yearWeek,
+                'records' => []
+            ];
         }
+        
+        $attendanceRecords[$yearWeek]['records'][] = $record;
     }
     $attendanceStmt->close();
     
@@ -186,44 +171,97 @@ try {
         }
         $current->add($interval);
     }
-    
-    // Kết hợp dữ liệu điểm danh với lịch học
-    foreach ($scheduledDates as $yearWeek => &$weekData) {
+      // Kết hợp dữ liệu điểm danh với lịch học và tính toán trạng thái cho từng buổi học
+    $today = new DateTime();
+    $today->setTime(0, 0, 0); // Reset thời gian về đầu ngày để so sánh chính xác
+      foreach ($scheduledDates as $yearWeek => &$weekData) {
+        $validDates = [];
         foreach ($weekData['dates'] as &$dateData) {
-            $found = false;
+            $classDate = new DateTime($dateData['date']);
+            $classDateTime = new DateTime($dateData['date'] . ' ' . $classInfo['start_time']);
+            $classEndTime = new DateTime($dateData['date'] . ' ' . $classInfo['end_time']);
             
-            if (isset($attendanceRecords[$yearWeek])) {
-                foreach ($attendanceRecords[$yearWeek]['records'] as $record) {
-                    if ($record['class_date'] === $dateData['date']) {
-                        $dateData['attendance'] = $record;
-                        $found = true;
-                        break;
+            // Chỉ xử lý buổi học đã qua hoặc hôm nay
+            if ($classDate <= $today) {
+                // Tính thời gian chấp nhận điểm danh cho buổi học này
+                // Chấp nhận từ 30 phút trước giờ học đến 15 phút sau giờ bắt đầu
+                $acceptanceStart = clone $classDateTime;
+                $acceptanceStart->sub(new DateInterval('PT30M')); // 30 phút trước
+                
+                $acceptanceEnd = clone $classDateTime;
+                $acceptanceEnd->add(new DateInterval('PT15M')); // 15 phút sau giờ bắt đầu
+                
+                // Thêm thông tin thời gian chấp nhận vào dateData
+                $dateData['acceptance_start'] = $acceptanceStart->format('H:i:s');
+                $dateData['acceptance_end'] = $acceptanceEnd->format('H:i:s');
+                $dateData['class_start_time'] = $classInfo['start_time'];
+                $dateData['class_end_time'] = $classInfo['end_time'];
+                  $found = false;
+                
+                // Tìm bản ghi điểm danh cho ngày này - kiểm tra tất cả attendance records
+                foreach ($attendanceRecords as $weekRecords) {
+                    foreach ($weekRecords['records'] as $record) {
+                        if ($record['class_date'] === $dateData['date']) {
+                            $checkInTime = new DateTime($record['checkin_time']);
+                              // Tính toán trạng thái dựa trên thời gian chấp nhận của buổi học này
+                            if ($checkInTime >= $acceptanceStart && $checkInTime <= $acceptanceEnd) {
+                                // Điểm danh trong thời gian chấp nhận
+                                if ($checkInTime <= $classDateTime) {
+                                    $record['status'] = 'present';
+                                    $record['status_text'] = 'Đi học';
+                                } else {
+                                    // Điểm danh sau giờ bắt đầu nhưng vẫn trong thời gian chấp nhận
+                                    $record['status'] = 'late';
+                                    $record['status_text'] = 'Muộn';
+                                }
+                                $record['is_valid_checkin'] = true;
+                            } else {
+                                // Điểm danh ngoài thời gian chấp nhận -> coi như vắng
+                                $record['status'] = 'absent';
+                                $record['status_text'] = 'Vắng';
+                                $record['is_valid_checkin'] = false;
+                            }
+                            
+                            $dateData['attendance'] = $record;
+                            $found = true;
+                            break 2; // Break cả 2 vòng lặp
+                        }
                     }
                 }
-            }
-            
-            if (!$found) {
-                // Ngày học đã qua mà không có điểm danh -> vắng
-                $classDate = new DateTime($dateData['date']);
-                $today = new DateTime();
-                if ($classDate < $today) {
-                    $dateData['attendance'] = [
-                        'status' => 'absent',
-                        'status_text' => 'Vắng',
-                        'class_date' => $dateData['date'],
-                        'formatted_date' => $dateData['formatted_date']
-                    ];
+                  if (!$found) {
+                    // Buổi học đã qua hoặc hôm nay mà không có điểm danh -> vắng
+                    $now = new DateTime();
+                    if ($classDate == $today && $now <= $acceptanceEnd) {
+                        // Buổi học hôm nay và vẫn trong thời gian chấp nhận -> vẫn có thể coi là vắng nếu chưa điểm danh
+                        $dateData['attendance'] = [
+                            'status' => 'absent',
+                            'status_text' => 'Vắng',
+                            'class_date' => $dateData['date'],
+                            'formatted_date' => $dateData['formatted_date'],
+                            'is_valid_checkin' => true
+                        ];
+                    } else {
+                        $dateData['attendance'] = [
+                            'status' => 'absent',
+                            'status_text' => 'Vắng',
+                            'class_date' => $dateData['date'],
+                            'formatted_date' => $dateData['formatted_date'],
+                            'is_valid_checkin' => false
+                        ];
+                    }
                 }
-                // Ngày học trong tương lai -> chưa học
-                else {
-                    $dateData['attendance'] = [
-                        'status' => 'upcoming',
-                        'status_text' => 'Chưa học',
-                        'class_date' => $dateData['date'],
-                        'formatted_date' => $dateData['formatted_date']
-                    ];
-                }
+                
+                $validDates[] = $dateData;
             }
+            // Bỏ qua các buổi học trong tương lai
+        }
+        $weekData['dates'] = $validDates;
+    }
+    
+    // Lọc bỏ các tuần không có buổi học nào (do skip các buổi học tương lai)
+    foreach ($scheduledDates as $yearWeek => $weekData) {
+        if (empty($weekData['dates'])) {
+            unset($scheduledDates[$yearWeek]);
         }
     }
     
@@ -245,14 +283,22 @@ try {
     ];
     $classInfo['schedule_day_vi'] = $weekdays[$classInfo['schedule_day']] ?? $classInfo['schedule_day'];
     $classInfo['formatted_time'] = date('H:i', strtotime($classInfo['start_time'])) . ' - ' . 
-                                   date('H:i', strtotime($classInfo['end_time']));
-    
-    // Trả về kết quả
+                                   date('H:i', strtotime($classInfo['end_time']));      // Trả về kết quả
     Response::json([
         "success" => true,
         "class" => $classInfo,
         "statistics" => $stats,
-        "attendance" => $attendanceSummary
+        "attendance" => $attendanceSummary,
+        "debug" => $debugInfo,        "attendance_rules" => [
+            "acceptance_window_before" => 30, // phút trước giờ học
+            "acceptance_window_after" => 15,  // phút sau giờ bắt đầu
+            "late_threshold" => 0, // điểm danh sau giờ bắt đầu = muộn
+            "status_types" => [
+                "present" => "Đi học",
+                "late" => "Muộn", 
+                "absent" => "Vắng"
+            ]
+        ]
     ]);
 
 } catch (Exception $e) {

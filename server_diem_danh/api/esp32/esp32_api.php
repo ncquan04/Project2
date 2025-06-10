@@ -1,32 +1,83 @@
 <?php
+// Bật hiển thị lỗi chi tiết (chỉ nên dùng khi debug)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
 include_once '../../config/config.php';
 
 // Thiết lập header cho API
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // Nhận dữ liệu từ ESP32
-$data = json_decode(file_get_contents('php://input'), true);
+$data = null;
+$raw_input = '';
+$json_error = 0;
+$json_error_msg = 'No error';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $raw_input = file_get_contents('php://input');
+    
+    // Làm sạch JSON - loại bỏ dấu phẩy thừa trước dấu }
+    $cleaned_input = preg_replace('/,\s*}/', '}', $raw_input);
+    $cleaned_input = preg_replace('/,\s*]/', ']', $cleaned_input);
+    
+    $data = json_decode($cleaned_input, true);
+    $json_error = json_last_error();
+    $json_error_msg = json_last_error_msg();
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Xử lý GET parameters
+    $data = $_GET;
+    $raw_input = json_encode($_GET);
+}
+
 $rfid_uid = $data['rfid_uid'] ?? '';
 $room = $data['room'] ?? '';
 
 if (empty($rfid_uid) || empty($room)) {
-    echo json_encode(['error' => 'Missing required data']);
+    echo json_encode([
+        'error' => 'Missing required data',
+        'raw_input' => $raw_input,
+        'cleaned_input' => $cleaned_input ?? 'N/A (GET request)',
+        'raw_input_length' => strlen($raw_input),
+        'received_data' => $data,
+        'json_error' => $json_error,
+        'json_error_msg' => $json_error_msg,
+        'rfid_uid' => $rfid_uid,
+        'room' => $room,
+        'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'not set',
+        'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'not set'
+    ]);
     exit;
 }
 
 try {
     // Kiểm tra sinh viên tồn tại
     $stmt = $conn->prepare("SELECT student_id, full_name FROM students WHERE rfid_uid = ?");
-    $stmt->bind_param("s", $rfid_uid);
-    $stmt->execute();
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare failed: ' . $conn->error]);
+        exit;
+    }
+    if (!$stmt->bind_param("s", $rfid_uid)) {
+        echo json_encode(['error' => 'Bind param failed: ' . $stmt->error]);
+        exit;
+    }
+    if (!$stmt->execute()) {
+        echo json_encode(['error' => 'Execute failed: ' . $stmt->error]);
+        exit;
+    }
     $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed: ' . $stmt->error]);
+        exit;
+    }
     
     if ($result->num_rows === 0) {
-        echo json_encode(value: ['error' => 'Student not found']);
+        echo json_encode(['error' => 'Student not found']);
         exit;
     }
     
@@ -49,12 +100,25 @@ try {
         AND DATE(?) BETWEEN c.start_date AND c.end_date
         AND TIME(?) BETWEEN TIME(c.start_time) AND TIME(c.end_time)
     ");
-    
-    $stmt->bind_param("sssss", $student_id, $room, $current_day, $current_time, $current_time);
-    $stmt->execute();
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare failed (class): ' . $conn->error]);
+        exit;
+    }
+    if (!$stmt->bind_param("sssss", $student_id, $room, $current_day, $current_time, $current_time)) {
+        echo json_encode(['error' => 'Bind param failed (class): ' . $stmt->error]);
+        exit;
+    }
+    if (!$stmt->execute()) {
+        echo json_encode(['error' => 'Execute failed (class): ' . $stmt->error]);
+        exit;
+    }
     $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed (class): ' . $stmt->error]);
+        exit;
+    }
     
-    $status = 'invalid';
+    $status = 'present';
     $notes = 'Không hợp lệ';
     $class_id = null;
     
@@ -64,9 +128,23 @@ try {
         
         // Lấy course_id từ class_id
         $stmt = $conn->prepare("SELECT course_id FROM classes WHERE class_id = ?");
-        $stmt->bind_param("i", $class_id);
-        $stmt->execute();
+        if (!$stmt) {
+            echo json_encode(['error' => 'Prepare failed (course): ' . $conn->error]);
+            exit;
+        }
+        if (!$stmt->bind_param("i", $class_id)) {
+            echo json_encode(['error' => 'Bind param failed (course): ' . $stmt->error]);
+            exit;
+        }
+        if (!$stmt->execute()) {
+            echo json_encode(['error' => 'Execute failed (course): ' . $stmt->error]);
+            exit;
+        }
         $course_result = $stmt->get_result();
+        if (!$course_result) {
+            echo json_encode(['error' => 'Get result failed (course): ' . $stmt->error]);
+            exit;
+        }
         $course = $course_result->fetch_assoc();
         $course_id = $course['course_id'];
         
@@ -98,8 +176,11 @@ try {
         )
         VALUES (?, ?, ?, ?, ?, TRUE, ?, ?)
     ");
-    
-    $stmt->bind_param("ssssiss", 
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare failed (attendance): ' . $conn->error]);
+        exit;
+    }
+    if (!$stmt->bind_param("ssssiss", 
         $student_id, 
         $rfid_uid, 
         $current_time,
@@ -107,8 +188,14 @@ try {
         $course_id,
         $status, 
         $notes
-    );
-    $stmt->execute();
+    )) {
+        echo json_encode(['error' => 'Bind param failed (attendance): ' . $stmt->error]);
+        exit;
+    }
+    if (!$stmt->execute()) {
+        echo json_encode(['error' => 'Execute failed (attendance): ' . $stmt->error]);
+        exit;
+    }
     
     // Trả về kết quả
     echo json_encode([
@@ -118,6 +205,6 @@ try {
     ]);
     
 } catch (Exception $e) {
-    echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Server error: ' . $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 }
-?> 
+?>

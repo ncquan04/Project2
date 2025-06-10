@@ -31,12 +31,34 @@ $newCheckinTime = isset($data['checkin_time']) ? $data['checkin_time'] : null;
 if ($attendanceId <= 0) {
     $studentId = isset($data['student_id']) ? $data['student_id'] : null;
     $room = isset($data['room']) ? $data['room'] : null;
-    $courseId = isset($data['course_id']) ? $data['course_id'] : null;
+    $classId = isset($data['class_id']) ? $data['class_id'] : null;
     $rfidUid = isset($data['rfid_uid']) ? $data['rfid_uid'] : null;
     $checkinTime = $newCheckinTime ? $newCheckinTime : (isset($data['checkin_time']) ? $data['checkin_time'] : null);
-    if (!$studentId || !$room || !$courseId || !$checkinTime || !$status) {
+    
+    if (!$studentId || !$room || !$classId || !$checkinTime || !$status) {
         Response::json(["success" => false, "error" => "Missing required fields to create new attendance record"], 400);
     }
+    
+    // Kiểm tra class_id có tồn tại trong bảng classes không và lấy course_id
+    $classCheckStmt = $conn->prepare("SELECT course_id FROM classes WHERE class_id = ?");
+    $classCheckStmt->bind_param("i", $classId);
+    $classCheckStmt->execute();
+    $classResult = $classCheckStmt->get_result();
+    if ($classResult->num_rows === 0) {
+        Response::json(["success" => false, "error" => "Invalid class_id. Class does not exist."], 400);
+    }
+    $classRow = $classResult->fetch_assoc();
+    $courseId = $classRow['course_id'];
+    
+    // Kiểm tra student_id có tồn tại trong bảng students không
+    $studentCheckStmt = $conn->prepare("SELECT student_id FROM students WHERE student_id = ?");
+    $studentCheckStmt->bind_param("s", $studentId);
+    $studentCheckStmt->execute();
+    $studentResult = $studentCheckStmt->get_result();
+    if ($studentResult->num_rows === 0) {
+        Response::json(["success" => false, "error" => "Invalid student_id. Student does not exist."], 400);
+    }
+    
     $insertStmt = $conn->prepare("INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, course_id, verified, status, notes) VALUES (?, ?, ?, ?, ?, 1, ?, CONCAT('[Created by teacher at ', NOW(), ']'))");
     $insertStmt->bind_param("ssssis", $studentId, $rfidUid, $checkinTime, $room, $courseId, $status);
     $success = $insertStmt->execute();
@@ -75,13 +97,35 @@ if ($result->num_rows === 0) {
     // Nếu không tìm thấy, kiểm tra các trường cần thiết để tạo mới
     $studentId = isset($data['student_id']) ? $data['student_id'] : null;
     $room = isset($data['room']) ? $data['room'] : null;
-    $courseId = isset($data['course_id']) ? $data['course_id'] : null;
+    $classId = isset($data['class_id']) ? $data['class_id'] : null;
     $rfidUid = isset($data['rfid_uid']) ? $data['rfid_uid'] : null;
     $checkinTime = $newCheckinTime ? $newCheckinTime : (isset($data['checkin_time']) ? $data['checkin_time'] : null);
-    if (!$studentId || !$room || !$courseId || !$checkinTime) {
+    
+    if (!$studentId || !$room || !$classId || !$checkinTime) {
         Response::json(["success" => false, "error" => "Missing required fields to create new attendance record"], 400);
     }
-    $insertStmt = $conn->prepare("INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, course_id, verified, status, notes) VALUES (?, ?, ?, ?, ?, 1, ?, '[Created by teacher at ' + NOW() + ']')");
+    
+    // Kiểm tra class_id có tồn tại trong bảng classes không và lấy course_id
+    $classCheckStmt = $conn->prepare("SELECT course_id FROM classes WHERE class_id = ?");
+    $classCheckStmt->bind_param("i", $classId);
+    $classCheckStmt->execute();
+    $classResult = $classCheckStmt->get_result();
+    if ($classResult->num_rows === 0) {
+        Response::json(["success" => false, "error" => "Invalid class_id. Class does not exist."], 400);
+    }
+    $classRow = $classResult->fetch_assoc();
+    $courseId = $classRow['course_id'];
+    
+    // Kiểm tra student_id có tồn tại trong bảng students không
+    $studentCheckStmt = $conn->prepare("SELECT student_id FROM students WHERE student_id = ?");
+    $studentCheckStmt->bind_param("s", $studentId);
+    $studentCheckStmt->execute();
+    $studentResult = $studentCheckStmt->get_result();
+    if ($studentResult->num_rows === 0) {
+        Response::json(["success" => false, "error" => "Invalid student_id. Student does not exist."], 400);
+    }
+    
+    $insertStmt = $conn->prepare("INSERT INTO attendance (student_id, rfid_uid, checkin_time, room, course_id, verified, status, notes) VALUES (?, ?, ?, ?, ?, 1, ?, CONCAT('[Created by teacher at ', NOW(), ']'))");
     $insertStmt->bind_param("ssssis", $studentId, $rfidUid, $checkinTime, $room, $courseId, $status);
     $success = $insertStmt->execute();
     if ($success) {
@@ -115,29 +159,28 @@ if ($newCheckinTime) {
 } else {
     // Nếu không có checkin_time mới, dùng logic tự động sửa nếu cần
     if (($status === 'present' || $status === 'late')) {
-        // Lấy thông tin lớp học để xác định giờ bắt đầu
+        // Lấy thông tin lớp học thông qua course_id và room từ attendance
         $classStmt = $conn->prepare("SELECT cl.start_time, cl.room, cl.class_id, cl.class_code FROM classes cl WHERE cl.course_id = ? AND cl.room = ?");
         $classStmt->bind_param("is", $attendanceRow['course_id'], $attendanceRow['room']);
         $classStmt->execute();
         $classInfo = $classStmt->get_result()->fetch_assoc();
-        if ($classInfo && $attendanceRow['checkin_time']) {
-            $date = substr($attendanceRow['checkin_time'], 0, 10);
+        
+        if ($classInfo && $classInfo['start_time']) {
+            // Lấy ngày từ checkin_time hiện tại hoặc ngày hiện tại
+            $date = $attendanceRow['checkin_time'] ? substr($attendanceRow['checkin_time'], 0, 10) : date('Y-m-d');
             $classStartTime = $date . ' ' . $classInfo['start_time'];
-            $startWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' -1 hour'));
-            $endWindow = date('Y-m-d H:i:s', strtotime($classStartTime . ' +3 hour'));
-            // Nếu checkin_time hiện tại không nằm trong khoảng hợp lệ, cập nhật lại
-            if ($attendanceRow['checkin_time'] < $startWindow || $attendanceRow['checkin_time'] > $endWindow) {
-                $autoCheckinTime = $classStartTime;
+            
+            // Tính thời gian check-in theo trạng thái
+            if ($status === 'present') {
+                // Có mặt: thời gian vào lớp - 5 phút
+                $autoCheckinTime = date('Y-m-d H:i:s', strtotime($classStartTime . ' -5 minutes'));
+            } else if ($status === 'late') {
+                // Đi muộn: thời gian vào lớp + 5 phút
+                $autoCheckinTime = date('Y-m-d H:i:s', strtotime($classStartTime . ' +5 minutes'));
             }
-        }
-        // Nếu không có checkin_time, cũng cập nhật thành giờ bắt đầu buổi học
-        if (!$attendanceRow['checkin_time']) {
-            $date = date('Y-m-d');
-            if ($classInfo && $classInfo['start_time']) {
-                $autoCheckinTime = $date . ' ' . $classInfo['start_time'];
-            } else {
-                $autoCheckinTime = date('Y-m-d H:i:s');
-            }
+        } else {
+            // Nếu không tìm được thông tin lớp, dùng thời gian hiện tại
+            $autoCheckinTime = date('Y-m-d H:i:s');
         }
     }
     if (isset($autoCheckinTime)) {
