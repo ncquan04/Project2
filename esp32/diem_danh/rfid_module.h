@@ -5,7 +5,7 @@
 #include <SPI.h>
 
 #define SS_PIN 5    // Chân SDA (SS)
-#define RST_PIN 22  // Chân RST
+#define RST_PIN 17  // Chân RST
 
 extern MFRC522 mfrc522;  // Đối tượng MFRC522 toàn cục
 
