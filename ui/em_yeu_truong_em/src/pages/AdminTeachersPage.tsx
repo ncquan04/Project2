@@ -354,7 +354,7 @@ const AdminTeachersPage: React.FC = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'full_name' | 'department' | 'position' | 'employee_id')}
-                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="full_name">Họ tên</option>
                   <option value="department">Khoa</option>

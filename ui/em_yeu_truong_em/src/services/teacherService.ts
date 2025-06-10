@@ -334,7 +334,6 @@ export class TeacherService {
       throw error;
     }
   }
-
   /**
    * Update or create attendance record for a student
    * @param params - Full record for both update and create
@@ -345,7 +344,7 @@ export class TeacherService {
       student_id: string;
       status: 'present' | 'absent' | 'late';
       room: string;
-      course_id: number;
+      class_id: number;
       checkin_time: string;
       rfid_uid?: string | null;
     }
@@ -357,7 +356,7 @@ export class TeacherService {
         student_id: params.student_id,
         status: params.status,
         room: params.room,
-        course_id: params.course_id,
+        class_id: params.class_id,
         checkin_time: params.checkin_time,
         rfid_uid: params.rfid_uid ?? null,
       };

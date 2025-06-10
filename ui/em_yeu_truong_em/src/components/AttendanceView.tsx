@@ -120,7 +120,7 @@ const AttendanceView = ({
                       <select
                         value={editStatus}
                         onChange={(e) => setEditStatus(e.target.value as 'present' | 'absent' | 'late')}
-                        className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="block text-black w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       >
                         <option value="present">Có mặt</option>
                         <option value="absent">Vắng mặt</option>

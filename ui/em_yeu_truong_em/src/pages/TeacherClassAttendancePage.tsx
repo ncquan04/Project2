@@ -172,20 +172,158 @@ const TeacherClassAttendancePage = () => {
       }
     };
     fetchStudents();
-  }, [classId]);
-  const handleExportAttendance = async (format: 'csv' | 'pdf' | 'excel') => {
-    if (!classId) return;
-    
+  }, [classId]);  const handleExportAttendance = (format: 'csv' | 'pdf' | 'excel') => {
+    if (!classInfo || !attendance.length || !students.length) {
+      alert('Không có dữ liệu để xuất. Vui lòng chọn ngày có dữ liệu điểm danh.');
+      return;
+    }
+
     try {
-      const fileUrl = await teacherService.exportAttendance(Number(classId), format);
+      // Chuẩn bị dữ liệu xuất
+      const exportData = [];
+        // Header
+      const header = [
+        'STT',
+        'MSSV', 
+        'Họ và tên',
+        'Lớp',
+        'Trạng thái'
+      ];
+      exportData.push(header);
+
+      // Dữ liệu sinh viên và điểm danh
+      let index = 1;
+      students.forEach(student => {
+        const attendanceRecord = attendance.find(att => 
+          String(att.student_id || att.studentId) === String(student.student_id)
+        );
+        const status = attendanceRecord?.attendance?.status || 'Vắng';
+        
+        const row = [
+          index++,
+          student.student_id,
+          student.full_name || student.name,
+          student.class || student.student_class || '',
+          status === 'present' ? 'Có mặt' : 
+          status === 'late' ? 'Muộn' : 
+          status === 'absent' ? 'Vắng' : status
+        ];
+        exportData.push(row);
+      });
+
+      if (format === 'csv') {
+        // Xuất CSV
+        const csvContent = exportData.map(row => 
+          row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+        ).join('\n');
+        
+        // Thêm BOM để Excel đọc được UTF-8
+        const blob = new Blob(['\ufeff' + csvContent], { 
+          type: 'text/csv;charset=utf-8;' 
+        });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `diem_danh_${classInfo.name || classId}_${selectedDate}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        
+      } else if (format === 'excel') {
+        // Xuất Excel (dạng HTML table để Excel có thể mở)
+        let htmlContent = `
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Điểm danh lớp ${classInfo.name}</title>
+            </head>
+            <body>
+              <h2>Điểm danh lớp ${classInfo.name}</h2>
+              <p>Ngày: ${new Date(selectedDate).toLocaleDateString('vi-VN')}</p>
+              <p>Phòng: ${classInfo.room}</p>
+              <p>Môn học: ${classInfo.subject}</p>
+              <table border="1" cellpadding="5" cellspacing="0">`;
+        
+        exportData.forEach((row, rowIndex) => {
+          htmlContent += '<tr>';
+          row.forEach(cell => {
+            const tag = rowIndex === 0 ? 'th' : 'td';
+            htmlContent += `<${tag}>${String(cell)}</${tag}>`;
+          });
+          htmlContent += '</tr>';
+        });
+        
+        htmlContent += `
+              </table>
+            </body>
+          </html>`;
+        
+        const blob = new Blob([htmlContent], { 
+          type: 'application/vnd.ms-excel;charset=utf-8;' 
+        });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `diem_danh_${classInfo.name || classId}_${selectedDate}.xls`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+          } else if (format === 'pdf') {
+        // Để xuất PDF, chúng ta sẽ mở cửa sổ in
+        let printContent = `
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Điểm danh lớp ${classInfo.name}</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                h2 { color: #333; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; font-weight: bold; }
+                tr:nth-child(even) { background-color: #f9f9f9; }
+                .info { margin-bottom: 10px; }
+                @media print {
+                  body { margin: 0; }
+                }
+              </style>
+            </head>
+            <body>
+              <h2>Điểm danh lớp ${classInfo.name}</h2>
+              <div class="info">
+                <p><strong>Ngày:</strong> ${new Date(selectedDate).toLocaleDateString('vi-VN')}</p>
+                <p><strong>Phòng:</strong> ${classInfo.room}</p>
+                <p><strong>Môn học:</strong> ${classInfo.subject}</p>
+              </div>
+              <table>`;
+        
+        exportData.forEach((row, rowIndex) => {
+          printContent += '<tr>';
+          row.forEach(cell => {
+            const tag = rowIndex === 0 ? 'th' : 'td';
+            printContent += `<${tag}>${String(cell)}</${tag}>`;
+          });
+          printContent += '</tr>';
+        });
+        
+        printContent += `
+              </table>
+            </body>
+          </html>`;
+        
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(printContent);
+          printWindow.document.close();
+          printWindow.focus();
+          setTimeout(() => {
+            printWindow.print();
+          }, 500);
+        }
+      }
       
-      // Create a temporary link to download the file
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.download = `attendance_${classId}_${selectedDate}.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (err) {
       console.error(`Error exporting attendance as ${format}:`, err);
       alert(`Không thể xuất dữ liệu điểm danh dưới dạng ${format.toUpperCase()}. Vui lòng thử lại sau.`);
@@ -244,7 +382,7 @@ const TeacherClassAttendancePage = () => {
                   id="date-select"
                   value={selectedDate}
                   onChange={e => setSelectedDate(e.target.value)}
-                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="shadow-sm text-black focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                 >
                   {validDates.map(date => (
                     <option key={date} value={date}>
@@ -345,14 +483,13 @@ const TeacherClassAttendancePage = () => {
                     let success = false;
                     if (!classInfo) throw new Error('Missing class info');
                     const startTime = classInfo.start_time || getStartTimeFromSchedule(classInfo.schedule);
-                    const checkin_time = selectedDate + ' ' + startTime;
-                    const course_id = classInfo.id;
+                    const checkin_time = selectedDate + ' ' + startTime;                    const class_id = classInfo.id;
                     const student_id = String(record.student_id || record.studentId).trim();
                     const payload = {
                       status,
                       checkin_time,
                       room: classInfo.room,
-                      course_id: Number(course_id),
+                      class_id: Number(class_id),
                       student_id, // luôn trim để tránh lỗi foreign key
                       rfid_uid: record.rfid_uid || '',
                       attendanceId: record.attendance?.attendance_id || 0, // Lấy attendance_id đúng từ object attendance

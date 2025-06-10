@@ -288,7 +288,7 @@ const AdminStudentsPage: React.FC = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'student_id' | 'full_name' | 'class' | 'rfid_uid')}
-                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="student_id">Mã SV</option>
                   <option value="full_name">Họ tên</option>

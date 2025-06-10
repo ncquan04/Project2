@@ -417,11 +417,12 @@ const AdminClassesPage: React.FC = () => {
                   required
                 />
               </div>              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">Giáo viên</label>                <select
+                <label className="block text-sm font-medium mb-1 text-gray-700">Giáo viên</label>                
+                <select
                   name="teacher_id"
                   value={formData.teacher_id}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-colors"
+                  className="w-full  border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-colors"
                   required
                 >
                   <option value="">Chọn giáo viên</option>
