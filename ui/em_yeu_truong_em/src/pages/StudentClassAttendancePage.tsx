@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getClassAttendance, ClassDetail, SessionInfo } from '../services/studentService';
+import { getClassAttendance, ClassDetailInfo, AttendanceStatistics, WeekAttendance } from '../services/studentService';
 import { useAuth } from '../contexts/AuthContext';
 
 interface RouteParams {
@@ -14,8 +14,9 @@ const StudentClassAttendancePage: React.FC = () => {
   // Lấy thông tin user từ context authentication
   const { user } = useAuth();
   
-  const [classDetails, setClassDetails] = useState<ClassDetail | null>(null);
-  const [sessions, setSessions] = useState<SessionInfo[]>([]);
+  const [classInfo, setClassInfo] = useState<ClassDetailInfo | null>(null);
+  const [statistics, setStatistics] = useState<AttendanceStatistics | null>(null);
+  const [attendance, setAttendance] = useState<WeekAttendance[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,8 +39,9 @@ const StudentClassAttendancePage: React.FC = () => {
     setError(null);
     try {
       const data = await getClassAttendance(id, studentId);
-      setClassDetails(data.class_details);
-      setSessions(data.sessions);
+      setClassInfo(data.classInfo);
+      setStatistics(data.statistics);
+      setAttendance(data.attendance);
     } catch (err) {
       setError('Không thể tải thông tin điểm danh. Vui lòng thử lại sau.');
       console.error(err);
@@ -56,12 +58,6 @@ const StudentClassAttendancePage: React.FC = () => {
       month: 'long',
       day: 'numeric'
     });
-  };
-
-  // Hàm định dạng giờ
-  const formatTime = (timeString: string) => {
-    const [hour, minute] = timeString.split(':');
-    return `${hour}:${minute}`;
   };
 
   // Hàm lấy màu dựa trên trạng thái điểm danh
@@ -97,6 +93,12 @@ const StudentClassAttendancePage: React.FC = () => {
     navigate('/student/classes');
   };
 
+  // Tính toán số buổi vắng từ statistics
+  const getAbsentCount = () => {
+    if (!statistics) return 0;
+    return statistics.total_sessions - statistics.attended_sessions;
+  };
+
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Nút quay lại */}
@@ -118,42 +120,42 @@ const StudentClassAttendancePage: React.FC = () => {
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {error}
         </div>
-      ) : classDetails ? (
+      ) : classInfo && statistics ? (
         <div>
           {/* Thông tin lớp học */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">
-              {classDetails.class_info.course_name} 
+              {classInfo.course_name} 
               <span className="text-lg font-normal text-gray-600 ml-2">
-                ({classDetails.class_info.class_code})
+                ({classInfo.class_code})
               </span>
             </h1>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-gray-600">
-                  <span className="font-medium">Mã môn học:</span> {classDetails.class_info.course_code}
+                  <span className="font-medium">Mã môn học:</span> {classInfo.course_code}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Giảng viên:</span> {classDetails.class_info.teacher_name}
+                  <span className="font-medium">Giảng viên:</span> {classInfo.teacher_name}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Phòng học:</span> {classDetails.class_info.room}
+                  <span className="font-medium">Phòng học:</span> {classInfo.room}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Lịch học:</span> {classDetails.class_info.schedule_day_vi} ({classDetails.class_info.formatted_time})
+                  <span className="font-medium">Lịch học:</span> {classInfo.schedule_day_vi} ({classInfo.formatted_time})
                 </p>
               </div>
               
               <div>
                 <p className="text-gray-600">
-                  <span className="font-medium">Học kỳ:</span> {classDetails.class_info.semester}
+                  <span className="font-medium">Học kỳ:</span> {classInfo.semester}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Ngày bắt đầu:</span> {formatDate(classDetails.class_info.start_date)}
+                  <span className="font-medium">Ngày bắt đầu:</span> {formatDate(classInfo.start_date)}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Ngày kết thúc:</span> {formatDate(classDetails.class_info.end_date)}
+                  <span className="font-medium">Ngày kết thúc:</span> {formatDate(classInfo.end_date)}
                 </p>
               </div>
             </div>
@@ -166,83 +168,26 @@ const StudentClassAttendancePage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-600">Tổng số buổi học</p>
-                <p className="text-2xl font-bold text-blue-600">{classDetails.attendance_summary.total_sessions}</p>
+                <p className="text-2xl font-bold text-blue-600">{statistics.total_sessions}</p>
               </div>
               
               <div className="bg-green-50 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-600">Có mặt</p>
-                <p className="text-2xl font-bold text-green-600">{classDetails.attendance_summary.attended}</p>
+                <p className="text-2xl font-bold text-green-600">{statistics.attended_sessions}</p>
               </div>
               
               <div className="bg-red-50 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-600">Vắng mặt</p>
-                <p className="text-2xl font-bold text-red-600">{classDetails.attendance_summary.absent}</p>
+                <p className="text-2xl font-bold text-red-600">{getAbsentCount()}</p>
               </div>
               
               <div className="bg-purple-50 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-600">Tỷ lệ điểm danh</p>
-                <p className="text-2xl font-bold text-purple-600">{classDetails.attendance_summary.attendance_rate}%</p>
+                <p className="text-2xl font-bold text-purple-600">{statistics.attendance_rate}%</p>
               </div>
             </div>
           </div>
 
-          {/* Chi tiết các buổi học */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Chi tiết điểm danh</h2>
-            
-            {sessions.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">Chưa có buổi học nào được ghi nhận.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Buổi học
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Ngày
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Thời gian
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Trạng thái
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Ghi chú
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {sessions.map((session, index) => (
-                      <tr key={session.session_id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">Buổi {index + 1}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{formatDate(session.session_date)}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {formatTime(session.start_time)} - {formatTime(session.end_time)}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(session.attendance_status)}`}>
-                            {getStatusName(session.attendance_status)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {session.notes || '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
         </div>
       ) : (
         <div className="text-center py-6">

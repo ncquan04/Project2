@@ -1,42 +1,28 @@
 <?php
-// Include file cấu hình (đã tải các biến từ .env)
-include_once '../../config/config.php';
-
-// Thiết lập header cho API
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
+require_once '../../config/config.php';
 
-// Hàm ghi log lỗi
-function logError($message) {
-    $timestamp = date('Y-m-d H:i:s');
-    error_log("$timestamp - $message\n", 3, "../logs/error.log");
-}
-
-// Hàm trả về lỗi và dừng chương trình
-function sendError($message, $httpCode = 400, $detail = null) {
-    http_response_code($httpCode);
-    $response = ["error" => $message];
-    if ($detail) {
-        $response["detail"] = $detail;
-    }
-    logError($message . ($detail ? " - Detail: $detail" : ""));
-    die(json_encode($response));
-}
-
-// Lấy API Key từ biến môi trường
-$validApiKey = $_ENV['API_KEY'];
-if (!$validApiKey) {
-    sendError("API Key không được thiết lập", 500);
-}
-
-// Kiểm tra API Key từ header của yêu cầu
-$headers = array_change_key_case(getallheaders(), CASE_LOWER);
-file_put_contents('headers.log', print_r($headers, true));
-$apiKey = $headers['x-api-key'] ?? '';
-if ($apiKey !== $validApiKey) {
-    sendError("API Key không hợp lệ", 401);
+function removeVietnameseTones($str) {
+    $str = preg_replace([
+        "/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/",
+        "/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/",
+        "/(ì|í|ị|ỉ|ĩ)/",
+        "/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/",
+        "/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/",
+        "/(ỳ|ý|ỵ|ỷ|ỹ)/",
+        "/(đ)/",
+        "/(À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ)/",
+        "/(È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ)/",
+        "/(Ì|Í|Ị|Ỉ|Ĩ)/",
+        "/(Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ)/",
+        "/(Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ)/",
+        "/(Ỳ|Ý|Ỵ|Ỷ|Ỹ)/",
+        "/(Đ)/"
+    ], [
+        "a", "e", "i", "o", "u", "y", "d",
+        "A", "E", "I", "O", "U", "Y", "D"
+    ], $str);
+    return $str;
 }
 
 // Nhận dữ liệu từ ESP32
@@ -44,69 +30,112 @@ $data = json_decode(file_get_contents('php://input'), true);
 $rfid_uid = $data['rfid_uid'] ?? '';
 $room = $data['room'] ?? '';
 
-// Kiểm tra dữ liệu đầu vào
-if (empty($rfid_uid)) {
-    sendError("Thiếu UID thẻ RFID");
-}
-if (empty($room)) {
-    sendError("Thiếu thông tin phòng");
-}
-// Làm sạch dữ liệu (tránh ký tự không hợp lệ)
-$rfid_uid = filter_var($rfid_uid, FILTER_SANITIZE_STRING);
-$room = filter_var($room, FILTER_SANITIZE_STRING);
-
-// Truy vấn thông tin sinh viên
-$sql = "SELECT student_id, full_name FROM students WHERE rfid_uid = ?";
-$stmt = $conn->prepare($sql);
-if (!$stmt) {
-    sendError("Lỗi chuẩn bị truy vấn", 500, $conn->error);
+if (empty($rfid_uid) || empty($room)) {
+    echo json_encode(['error' => 'Missing required data']);
+    exit;
 }
 
-if (!$stmt->bind_param("s", $rfid_uid)) {
-    sendError("Lỗi ràng buộc tham số", 500, $stmt->error);
-}
-
-if (!$stmt->execute()) {
-    sendError("Lỗi thực thi truy vấn", 500, $stmt->error);
-}
-
-$result = $stmt->get_result();
-if (!$result) {
-    sendError("Lỗi nhận kết quả", 500, $stmt->error);
-}
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $student_id = $row['student_id'];
-    $full_name = strtoupper($row['full_name']);
-
+try {
+    // Kiểm tra sinh viên tồn tại
+    $stmt = $conn->prepare("SELECT student_id, full_name FROM students WHERE rfid_uid = ?");
+    $stmt->bind_param("s", $rfid_uid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        echo json_encode(['error' => 'Student not found']);
+        exit;
+    }
+    
+    $student = $result->fetch_assoc();
+    $student_id = $student['student_id'];
+    $full_name = $student['full_name'];
+    $full_name_no_tone = removeVietnameseTones($full_name);
+    
+    // Lấy thời gian hiện tại
+    $current_time = date('Y-m-d H:i:s');
+    $current_day = strtolower(date('l')); // Lấy tên thứ trong tuần
+    
+    // Tìm lớp học phù hợp
+    $stmt = $conn->prepare("
+        SELECT c.class_id, c.start_time, c.end_time
+        FROM classes c
+        JOIN student_classes sc ON c.class_id = sc.class_id
+        WHERE sc.student_id = ?
+        AND c.room = ?
+        AND c.schedule_day = ?
+        AND DATE(?) BETWEEN c.start_date AND c.end_date
+        AND TIME(?) BETWEEN TIME(c.start_time) AND TIME(c.end_time)
+    ");
+    
+    $stmt->bind_param("sssss", $student_id, $room, $current_day, $current_time, $current_time);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $status = 'absent';
+    $notes = 'Không hợp lệ';
+    $class_id = null;
+    
+    if ($result->num_rows > 0) {
+        $class = $result->fetch_assoc();
+        $class_id = $class['class_id'];
+        
+        // Lấy course_id từ class_id
+        $stmt = $conn->prepare("SELECT course_id FROM classes WHERE class_id = ?");
+        $stmt->bind_param("i", $class_id);
+        $stmt->execute();
+        $course_result = $stmt->get_result();
+        $course = $course_result->fetch_assoc();
+        $course_id = $course['course_id'];
+        
+        // Tính thời gian chênh lệch
+        $checkin_time = new DateTime($current_time);
+        $start_time = new DateTime(date('Y-m-d ') . $class['start_time']);
+        $diff_minutes = ($checkin_time->getTimestamp() - $start_time->getTimestamp()) / 60;
+        
+        if ($diff_minutes <= 15) {
+            $status = 'present';
+            $notes = 'Đúng giờ';
+        } else {
+            $status = 'late';
+            $notes = 'Đi trễ ' . round($diff_minutes) . ' phút';
+        }
+    }
+    
     // Ghi dữ liệu điểm danh
-    $sql = "INSERT INTO attendance (student_id, room) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        sendError("Lỗi chuẩn bị truy vấn điểm danh", 500, $conn->error);
-    }
-
-    if (!$stmt->bind_param("ss", $student_id, $room)) {
-        sendError("Lỗi ràng buộc tham số điểm danh", 500, $stmt->error);
-    }
-
-    if (!$stmt->execute()) {
-        sendError("Lỗi ghi dữ liệu điểm danh", 500, $stmt->error);
-    }
-
-    // Phản hồi thành công
-    http_response_code(200);
+    $stmt = $conn->prepare("
+        INSERT INTO attendance (
+            student_id, 
+            rfid_uid, 
+            checkin_time,
+            room, 
+            course_id,
+            verified,
+            status, 
+            notes
+        )
+        VALUES (?, ?, ?, ?, ?, TRUE, ?, ?)
+    ");
+    
+    $stmt->bind_param("ssssiss", 
+        $student_id, 
+        $rfid_uid, 
+        $current_time,
+        $room, 
+        $course_id,
+        $status, 
+        $notes
+    );
+    $stmt->execute();
+    
+    // Trả về kết quả
     echo json_encode([
-        "full_name" => $full_name,
-        "student_id" => $student_id,
-        "message" => "ĐIỂM DANH THÀNH CÔNG"
+        'full_name' => $full_name_no_tone,
+        'student_id' => $student_id,
+        'status' => $status
     ]);
-} else {
-    sendError("SINH VIEN KHONG TON TAI", 404);
+    
+} catch (Exception $e) {
+    echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
 }
-
-// Đóng tài nguyên
-$stmt->close();
-$conn->close();
-?>
+?> 
